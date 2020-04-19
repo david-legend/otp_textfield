@@ -66,7 +66,6 @@ class _OtpTextFieldState extends State<OtpTextField> {
   List<FocusNode> _focusNodes;
   List<TextEditingController> _textControllers;
 
-
   @override
   void initState() {
     super.initState();
@@ -91,7 +90,6 @@ class _OtpTextFieldState extends State<OtpTextField> {
     @required BuildContext context,
     @required int index,
   }) {
-
     return Container(
       width: widget.fieldWidth,
       margin: widget.margin,
@@ -112,42 +110,44 @@ class _OtpTextFieldState extends State<OtpTextField> {
           filled: widget.filled,
           fillColor: widget.fillColor,
           focusedBorder: widget.showFieldAsBox
-              ? outlineBorder()
-              : underlineInputBorder(),
+              ? outlineBorder(widget.focusedBorderColor)
+              : underlineInputBorder(widget.focusedBorderColor),
           disabledBorder: widget.showFieldAsBox
-              ? outlineBorder()
-              : underlineInputBorder(),
+              ? outlineBorder(widget.disabledBorderColor)
+              : underlineInputBorder(widget.disabledBorderColor),
           border: widget.showFieldAsBox
-              ? outlineBorder()
-              : underlineInputBorder(),
+              ? outlineBorder(widget.borderColor)
+              : underlineInputBorder(widget.borderColor),
         ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
-          onCodeChanged(verificationCode: value);
           //save entered value in a list
           _verificationCode[index] = value;
+          onCodeChanged(verificationCode: value);
           changeFocusToNextNodeWhenValueIsEntered(
-              value: value, indexOfTextField: index);
+            value: value,
+            indexOfTextField: index,
+          );
           onSubmit(verificationCode: _verificationCode);
         },
       ),
     );
   }
 
-  OutlineInputBorder outlineBorder() {
+  OutlineInputBorder outlineBorder(Color color) {
     return OutlineInputBorder(
       borderSide: BorderSide(
         width: widget.borderWidth,
-        color: widget.focusedBorderColor,
+        color: color,
       ),
       borderRadius: widget.borderRadius,
     );
   }
 
-  UnderlineInputBorder underlineInputBorder() {
+  UnderlineInputBorder underlineInputBorder(Color color) {
     return UnderlineInputBorder(
       borderSide: BorderSide(
-        color: widget.borderColor,
+        color: color,
         width: widget.borderWidth,
       ),
     );

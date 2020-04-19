@@ -65,6 +65,8 @@ import 'package:otptextfield/otptextfield.dart';
             }, // end onSubmit
           ),
 ``` 
+![](assets/verify1.jpeg)
+![](assets/verify2.jpeg)
 
 ### Attributes
 Customizable attributes for PinInputTextField
