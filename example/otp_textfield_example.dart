@@ -17,6 +17,9 @@ class ExamplePinEntry extends StatelessWidget {
           child: OtpTextField(
             numberOfFields: 5,
             borderColor: Color(0xFF512DA8),
+            onCodeChanged: (String value) {
+
+            },
             onSubmit: (String verificationCode){
               //navigate to different screen code goes here
               showDialog(

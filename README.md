@@ -20,7 +20,50 @@ OtpTextField is a TextField widget to help display different style pin. It suppo
 ## Installing 🔧
 Install the latest version from [pub](https://pub.dartlang.org/packages/otp_textfield).
 
-## Usage 🚅
+# Installing
+## Use this package as a library
+### 1. Depend on it
+Add this to your package's pubspec.yaml file:
+```
+dependencies:
+  otptextfield: ^0.0.1
+```
+### 2. Install it
+You can install packages from the command line:
+with Flutter:
+```
+$ flutter packages get
+```
+Alternatively, your editor might support flutter packages get. Check the docs for your editor to learn more.
+
+### 3. Import it
+Now in your Dart code, you can use:
+```
+import 'package:otptextfield/otptextfield.dart';
+```
+
+### Usage
+
+``` 
+        OtpTextField(
+            numberOfFields: 5,
+            borderColor: Color(0xFF512DA8),
+            onCodeChanged: (String code) {
+                //handle validation or checks here           
+            },
+            onSubmit: (String verificationCode){
+              showDialog(
+                  context: context,
+                  builder: (context){
+                    return AlertDialog(
+                      title: Text("Verification Code"),
+                      content: Text('Code entered is $verificationCode'),
+                    );
+                  }
+              );
+            }, // end onSubmit
+          ),
+``` 
 
 ### Attributes
 Customizable attributes for PinInputTextField
