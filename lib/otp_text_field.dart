@@ -1,4 +1,4 @@
-library otptextfield;
+library flutter_otp_text_field;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

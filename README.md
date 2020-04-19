@@ -1,12 +1,12 @@
-# otp_text_field
+# flutter_otp_text_field
 
 [![pub package](https://img.shields.io/pub/v/otp_textfield.svg)](https://pub.dartlang.org/packages/otp_textfield)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 ![GitHub top language](https://img.shields.io/github/languages/top/david-legend/otp_textfield)
 
-# otp_text_field
+# flutter_otp_text_field
 
-OtpTextField is a TextField widget to help display different style pin. It supports all the platforms [flutter](https://github.com/flutter/flutter) supports.
+Flutter_Otp_Text_Field is a TextField widget to help display different style pin. It supports all the platforms [flutter](https://github.com/flutter/flutter) supports.
 
 ## Feature 👇👇
 * allows you to customize the shape of textField in any way you want
@@ -26,7 +26,7 @@ Install the latest version from [pub](https://pub.dartlang.org/packages/otp_text
 Add this to your package's pubspec.yaml file:
 ```
 dependencies:
-  otptextfield: ^0.0.1
+  flutter_otp_text_field: ^0.0.1
 ```
 ### 2. Install it
 You can install packages from the command line:
@@ -39,7 +39,7 @@ Alternatively, your editor might support flutter packages get. Check the docs fo
 ### 3. Import it
 Now in your Dart code, you can use:
 ```
-import 'package:otptextfield/otptextfield.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 ```
 
 ### Usage
