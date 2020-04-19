@@ -109,7 +109,7 @@ Customizable attributes for PinInputTextField
     <tr>
         <td>keyboardType</td>
         <td>TextInputType.number</td>
-        <td>Just like TextField's keyboardType, the default is TextInputType.phone</td>
+        <td>Just like TextField's keyboardType, the default is TextInputType.number</td>
     </tr>
     <tr>
         <td>autoFocus</td>
@@ -129,6 +129,6 @@ Customizable attributes for PinInputTextField
     <tr>
         <td>onCodeChanged</td>
         <td>(String code){}</td>
-        <td>Same as TextField's onChanged</td>
+        <td>Executes every time a value is entered into the textField. Same as TextField's onChanged</td>
     </tr>
 </table>
