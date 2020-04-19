@@ -92,13 +92,6 @@ Customizable attributes for PinInputTextField
         </td>
     </tr>
     <tr>
-        <td>cursorColor</td>
-        <td>Colors.blue</td>
-        <td>Change color of textFields cursor. Defaults to [ThemeData.cursorColor] 
-        or [CupertinoTheme.primaryColor] depending on [ThemeData.platform]. 
-        </td>
-    </tr>
-    <tr>
         <td>mainAxisAlignment</td>
         <td>MainAxisAlignment.center</td>
         <td>Defaults to MainAxisAlignment.center</td>
