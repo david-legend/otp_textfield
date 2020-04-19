@@ -1,6 +1,6 @@
 # flutter_otp_text_field
 
-[![pub package](https://img.shields.io/pub/v/otp_textfield.svg)](https://pub.dartlang.org/packages/otp_textfield)
+[![pub package](https://img.shields.io/pub/v/flutter_otp_text_field.svg)](https://pub.dartlang.org/packages/flutter_otp_text_field)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 ![GitHub top language](https://img.shields.io/github/languages/top/david-legend/otp_textfield)
 
