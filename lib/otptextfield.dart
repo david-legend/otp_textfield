@@ -66,6 +66,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
   List<FocusNode> _focusNodes;
   List<TextEditingController> _textControllers;
 
+
   @override
   void initState() {
     super.initState();
@@ -90,6 +91,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     @required BuildContext context,
     @required int index,
   }) {
+
     return Container(
       width: widget.fieldWidth,
       margin: widget.margin,
