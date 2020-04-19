@@ -48,6 +48,7 @@ import 'package:otptextfield/otptextfield.dart';
         OtpTextField(
             numberOfFields: 5,
             borderColor: Color(0xFF512DA8),
+            showFieldAsBox: true, //set to true to show as box or false to show as dash
             onCodeChanged: (String code) {
                 //handle validation or checks here           
             },
