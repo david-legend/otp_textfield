@@ -1,8 +1,7 @@
 # otp_text_field
 
-![](https://github.com/david-legend/otp_textfield/workflows/Flutter%20Build%20Test%20CI/badge.svg?branch=master)
 [![pub package](https://img.shields.io/pub/v/otp_textfield.svg)](https://pub.dartlang.org/packages/otp_textfield)
-![GitHub](https://img.shields.io/github/license/david-legend/otp_textfield)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 ![GitHub top language](https://img.shields.io/github/languages/top/david-legend/otp_textfield)
 
 # otp_text_field
