@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 typedef OnCodeEnteredCompletion = void Function(String value);
+typedef OnCodeChanged = void Function(String value);
 
 class OtpTextField extends StatefulWidget {
   final int numberOfFields;
@@ -19,6 +20,7 @@ class OtpTextField extends StatefulWidget {
   final MainAxisAlignment mainAxisAlignment;
   final CrossAxisAlignment crossAxisAlignment;
   final OnCodeEnteredCompletion onSubmit;
+  final OnCodeEnteredCompletion onCodeChanged;
   final bool obscureText;
   final bool showFieldAsBox;
   final bool enabled;
@@ -51,6 +53,7 @@ class OtpTextField extends StatefulWidget {
     this.filled = false,
     this.fillColor = const Color(0xFFFFFFFF),
     this.decoration,
+    this.onCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
   }) : assert(numberOfFields > 0);
 
@@ -118,6 +121,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
+          onCodeChanged(verificationCode: value);
           //save entered value in a list
           _verificationCode[index] = value;
           changeFocusToNextNodeWhenValueIsEntered(
@@ -195,5 +199,9 @@ class _OtpTextFieldState extends State<OtpTextField> {
     if (verificationCode.every((String code) => code != null && code != '')) {
       widget.onSubmit(verificationCode.join());
     }
+  }
+
+  void onCodeChanged({@required String verificationCode}) {
+    widget.onCodeChanged(verificationCode);
   }
 }

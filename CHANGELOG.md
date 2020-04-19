@@ -1,3 +1,9 @@
-## [0.0.1] - TODO: Add release date.
+## [0.0.1] - 2020/04/19 
 
-* TODO: Describe initial release.
+* add comment to help understand source code.
+  add obscure style to be more customize.
+  add onPinChanged to observe the text changed.
+  add solidColor to set background color in BoxLooseDecoration & BoxTightDecoration.
+  add enteredColor for UnderlineDecoration&BoxLooseDecoration.
+  remove const default variable in PinInputTextField.
+  fix wrong place in painting
