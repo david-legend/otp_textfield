@@ -10,6 +10,7 @@ class OtpTextField extends StatefulWidget {
   final int numberOfFields;
   final double fieldWidth;
   final double borderWidth;
+  final Color enabledBorderColor;
   final Color focusedBorderColor;
   final Color disabledBorderColor;
   final Color borderColor;
@@ -40,6 +41,7 @@ class OtpTextField extends StatefulWidget {
     this.borderWidth = 2.0,
     this.cursorColor,
     this.disabledBorderColor = const Color(0xFFE7E7E7),
+    this.enabledBorderColor,
     this.borderColor = const Color(0xFFE7E7E7),
     this.focusedBorderColor = const Color(0xFF4F44FF),
     this.mainAxisAlignment = MainAxisAlignment.center,
@@ -112,6 +114,9 @@ class _OtpTextFieldState extends State<OtpTextField> {
           focusedBorder: widget.showFieldAsBox
               ? outlineBorder(widget.focusedBorderColor)
               : underlineInputBorder(widget.focusedBorderColor),
+          enabledBorder: widget.showFieldAsBox
+              ? outlineBorder(widget.enabledBorderColor)
+              : underlineInputBorder(widget.enabledBorderColor),
           disabledBorder: widget.showFieldAsBox
               ? outlineBorder(widget.disabledBorderColor)
               : underlineInputBorder(widget.disabledBorderColor),
