@@ -44,6 +44,7 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
               numberOfFields: 5,
               borderColor: Color(0xFF512DA8),
               focusedBorderColor: primaryColor,
+              
               showFieldAsBox: true,
               textStyle: theme.textTheme.subtitle1,
               onCodeChanged: (String value) {},
