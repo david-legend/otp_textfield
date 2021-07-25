@@ -14,14 +14,14 @@ class OtpTextField extends StatefulWidget {
   final Color focusedBorderColor;
   final Color disabledBorderColor;
   final Color borderColor;
-  final Color cursorColor;
+  final Color? cursorColor;
   final EdgeInsetsGeometry margin;
   final TextInputType keyboardType;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   final MainAxisAlignment mainAxisAlignment;
   final CrossAxisAlignment crossAxisAlignment;
-  final OnCodeEnteredCompletion onSubmit;
-  final OnCodeEnteredCompletion onCodeChanged;
+  final OnCodeEnteredCompletion? onSubmit;
+  final OnCodeEnteredCompletion? onCodeChanged;
   final bool obscureText;
   final bool showFieldAsBox;
   final bool enabled;
@@ -30,18 +30,20 @@ class OtpTextField extends StatefulWidget {
   final bool hasCustomInputDecoration;
   final Color fillColor;
   final BorderRadius borderRadius;
-  final InputDecoration decoration;
+  final InputDecoration? decoration;
+  final List<TextStyle?> styles;
 
   OtpTextField({
     this.numberOfFields = 4,
     this.fieldWidth = 40.0,
     this.margin = const EdgeInsets.only(right: 8.0),
     this.textStyle,
+    this.styles = const [],
     this.keyboardType = TextInputType.number,
     this.borderWidth = 2.0,
     this.cursorColor,
     this.disabledBorderColor = const Color(0xFFE7E7E7),
-    this.enabledBorderColor,
+    this.enabledBorderColor = const Color(0xFFE7E7E7),
     this.borderColor = const Color(0xFFE7E7E7),
     this.focusedBorderColor = const Color(0xFF4F44FF),
     this.mainAxisAlignment = MainAxisAlignment.center,
@@ -57,30 +59,37 @@ class OtpTextField extends StatefulWidget {
     this.decoration,
     this.onCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
-  }) : assert(numberOfFields > 0);
+  })  : assert(numberOfFields > 0),
+        assert(styles.length > 0
+            ? styles.length == numberOfFields
+            : styles.length == 0);
 
   @override
   _OtpTextFieldState createState() => _OtpTextFieldState();
 }
 
 class _OtpTextFieldState extends State<OtpTextField> {
-  List<String> _verificationCode;
-  List<FocusNode> _focusNodes;
-  List<TextEditingController> _textControllers;
+  late List<String?> _verificationCode;
+  late List<FocusNode?> _focusNodes;
+  late List<TextEditingController?> _textControllers;
 
   @override
   void initState() {
     super.initState();
-    _verificationCode = List<String>(widget.numberOfFields);
-    _focusNodes = List<FocusNode>(widget.numberOfFields);
-    _textControllers = List<TextEditingController>(widget.numberOfFields);
+
+    _verificationCode = List<String?>.filled(widget.numberOfFields, null);
+    _focusNodes = List<FocusNode?>.filled(widget.numberOfFields, null);
+    _textControllers = List<TextEditingController?>.filled(
+      widget.numberOfFields,
+      null,
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
     _textControllers
-        .forEach((TextEditingController controller) => controller.dispose());
+        .forEach((TextEditingController? controller) => controller?.dispose());
   }
 
   @override
@@ -89,8 +98,9 @@ class _OtpTextFieldState extends State<OtpTextField> {
   }
 
   Widget _buildTextField({
-    @required BuildContext context,
-    @required int index,
+    required BuildContext context,
+    required int index,
+    TextStyle? style,
   }) {
     return Container(
       width: widget.fieldWidth,
@@ -99,7 +109,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         keyboardType: widget.keyboardType,
         textAlign: TextAlign.center,
         maxLength: 1,
-        style: widget.textStyle,
+        style: style ?? widget.textStyle,
         autofocus: widget.autoFocus,
         cursorColor: widget.cursorColor,
         controller: _textControllers[index],
@@ -108,22 +118,22 @@ class _OtpTextFieldState extends State<OtpTextField> {
         decoration: widget.hasCustomInputDecoration
             ? widget.decoration
             : InputDecoration(
-          counterText: "",
-          filled: widget.filled,
-          fillColor: widget.fillColor,
-          focusedBorder: widget.showFieldAsBox
-              ? outlineBorder(widget.focusedBorderColor)
-              : underlineInputBorder(widget.focusedBorderColor),
-          enabledBorder: widget.showFieldAsBox
-              ? outlineBorder(widget.enabledBorderColor)
-              : underlineInputBorder(widget.enabledBorderColor),
-          disabledBorder: widget.showFieldAsBox
-              ? outlineBorder(widget.disabledBorderColor)
-              : underlineInputBorder(widget.disabledBorderColor),
-          border: widget.showFieldAsBox
-              ? outlineBorder(widget.borderColor)
-              : underlineInputBorder(widget.borderColor),
-        ),
+                counterText: "",
+                filled: widget.filled,
+                fillColor: widget.fillColor,
+                focusedBorder: widget.showFieldAsBox
+                    ? outlineBorder(widget.focusedBorderColor)
+                    : underlineInputBorder(widget.focusedBorderColor),
+                enabledBorder: widget.showFieldAsBox
+                    ? outlineBorder(widget.enabledBorderColor)
+                    : underlineInputBorder(widget.enabledBorderColor),
+                disabledBorder: widget.showFieldAsBox
+                    ? outlineBorder(widget.disabledBorderColor)
+                    : underlineInputBorder(widget.disabledBorderColor),
+                border: widget.showFieldAsBox
+                    ? outlineBorder(widget.borderColor)
+                    : underlineInputBorder(widget.borderColor),
+              ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
           //save entered value in a list
@@ -162,6 +172,14 @@ class _OtpTextFieldState extends State<OtpTextField> {
     List<Widget> textFields = List.generate(widget.numberOfFields, (int i) {
       addFocusNodeToEachTextField(index: i);
       addTextEditingControllerToEachTextField(index: i);
+
+      if (widget.styles.length > 0) {
+        return _buildTextField(
+          context: context,
+          index: i,
+          style: widget.styles[i],
+        );
+      }
       return _buildTextField(context: context, index: i);
     });
 
@@ -172,21 +190,21 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  void addFocusNodeToEachTextField({@required int index}) {
+  void addFocusNodeToEachTextField({required int index}) {
     if (_focusNodes[index] == null) {
       _focusNodes[index] = FocusNode();
     }
   }
 
-  void addTextEditingControllerToEachTextField({@required int index}) {
+  void addTextEditingControllerToEachTextField({required int index}) {
     if (_textControllers[index] == null) {
       _textControllers[index] = TextEditingController();
     }
   }
 
   void changeFocusToNextNodeWhenValueIsEntered({
-    @required String value,
-    @required int indexOfTextField,
+    required String value,
+    required int indexOfTextField,
   }) {
     //only change focus to the next textField if the value entered has a length greater than one
     if (value.length > 0) {
@@ -197,18 +215,22 @@ class _OtpTextFieldState extends State<OtpTextField> {
         FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField + 1]);
       } else {
         //if the textField in focus is the last textField, unFocus after text changed
-        _focusNodes[indexOfTextField].unfocus();
+        _focusNodes[indexOfTextField]?.unfocus();
       }
     }
   }
 
-  void onSubmit({@required List<String> verificationCode}) {
-    if (verificationCode.every((String code) => code != null && code != '')) {
-      widget.onSubmit(verificationCode.join());
+  void onSubmit({required List<String?> verificationCode}) {
+    if (verificationCode.every((String? code) => code != null && code != '')) {
+      if (widget.onSubmit != null) {
+        widget.onSubmit!(verificationCode.join());
+      }
     }
   }
 
-  void onCodeChanged({@required String verificationCode}) {
-    widget.onCodeChanged(verificationCode);
+  void onCodeChanged({required String verificationCode}) {
+    if (widget.onCodeChanged != null) {
+      widget.onCodeChanged!(verificationCode);
+    }
   }
 }
