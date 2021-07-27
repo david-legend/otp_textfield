@@ -44,6 +44,7 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
 ### Example Usage 1
 
+![](assets/otp_textfield_style_1.gif)
 ``` 
     OtpTextField(
         numberOfFields: 5,
@@ -68,7 +69,7 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
         }, // end onSubmit
         ),
 ``` 
-![](assets/otp_textfield_style_1.gif)
+
 
 
 ### Example Usage 2
