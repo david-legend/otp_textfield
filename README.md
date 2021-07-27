@@ -26,7 +26,7 @@ Install the latest version from [pub](https://pub.dartlang.org/packages/otp_text
 Add this to your package's pubspec.yaml file:
 ```
 dependencies:
-  flutter_otp_text_field: ^0.0.1
+  flutter_otp_text_field: ^1.0.0
 ```
 ### 2. Install it
 You can install packages from the command line:
@@ -42,34 +42,84 @@ Now in your Dart code, you can use:
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 ```
 
-### Usage
+### Example Usage 1
 
 ``` 
-        OtpTextField(
-            numberOfFields: 5,
-            borderColor: Color(0xFF512DA8),
-            showFieldAsBox: true, //set to true to show as box or false to show as dash
-            onCodeChanged: (String code) {
-                //handle validation or checks here           
-            },
-            onSubmit: (String verificationCode){
-              showDialog(
-                  context: context,
-                  builder: (context){
-                    return AlertDialog(
-                      title: Text("Verification Code"),
-                      content: Text('Code entered is $verificationCode'),
-                    );
-                  }
-              );
-            }, // end onSubmit
-          ),
+    OtpTextField(
+        numberOfFields: 5,
+        borderColor: Color(0xFF512DA8),
+        //set to true to show as box or false to show as dash
+        showFieldAsBox: true, 
+        //runs when a code is typed in
+        onCodeChanged: (String code) {
+            //handle validation or checks here           
+        },
+        //runs when every textfield is filled
+        onSubmit: (String verificationCode){
+            showDialog(
+                context: context,
+                builder: (context){
+                return AlertDialog(
+                    title: Text("Verification Code"),
+                    content: Text('Code entered is $verificationCode'),
+                );
+                }
+            );
+        }, // end onSubmit
+        ),
 ``` 
-![](assets/verify1.jpeg)
-![](assets/verify2.jpeg)
+![](assets/otp_textfield_style_1.gif)
+
+
+### Example Usage 2
+
+``` 
+    // if you want an otp_text_field with different 
+    // styles for each field
+
+    Color accentPurpleColor = Color(0xFF6A53A1);
+    Color primaryColor = Color(0xFF121212);
+    Color accentPinkColor = Color(0xFFF99BBD);
+    Color accentDarkGreenColor = Color(0xFF115C49);
+    Color accentYellowColor = Color(0xFFFFB612);
+    Color accentOrangeColor = Color(0xFFEA7A3B);
+
+    otpTextStyles = [
+        createStyle(accentPurpleColor),
+        createStyle(accentYellowColor),
+        createStyle(accentDarkGreenColor),
+        createStyle(accentOrangeColor),
+        createStyle(accentPinkColor),
+        createStyle(accentPurpleColor),
+    ];
+
+    TextStyle? createStyle(Color color) {
+        ThemeData theme = Theme.of(context);
+        return theme.textTheme.headline3?.copyWith(color: color);
+    }
+
+    OtpTextField(
+            numberOfFields: 6,
+            borderColor: accentPurpleColor,
+            focusedBorderColor: accentPurpleColor,
+            styles: otpTextStyles,
+            showFieldAsBox: false,
+            borderWidth: 4.0,
+            //runs when a code is typed in
+            onCodeChanged: (String code) {
+                //handle validation or checks here if necessary         
+            },
+            //runs when every textfield is filled 
+            onSubmit: (String verificationCode) {
+
+            }, 
+    ),
+```
+
+![](assets/otp_textfield_style_2.gif) 
 
 ### Attributes
-Customizable attributes for PinInputTextField
+Customizable attributes for OtpTextField
 <table>
     <th>Attribute Name</th>
     <th>Example Value</th>
@@ -99,15 +149,40 @@ Customizable attributes for PinInputTextField
             <td>InputDecoration</td>
             <td>set hasCustomInputDecoration to true and pass your own input decoration the way you see fit</td>
     </tr>
-     <tr>
+    <tr>
             <td>filled</td>
             <td>false</td>
             <td>set to true if you want to pass a fillColor</td>
      </tr>
-     <tr>
+    <tr>
             <td>fillColor</td>
-            <td>Colors.red</td>
+            <td>Color(0xFFFFFFFF)</td>
             <td>pass fillColor and set filled to true</td>
+    </tr>
+    <tr>
+            <td>enabledBorderColor</td>
+            <td>Color(0xFF4F44FF)</td>
+            <td>Pass Color value to show when textfield is enabled</td>
+    </tr>
+    <tr>
+            <td>focusedBorderColor</td>
+            <td>Color(0xFF4F44FF)</td>
+            <td>Pass Color value to show when textfield is in focus</td>
+    </tr>
+     <tr>
+            <td>borderColor</td>
+            <td>Color(0xFFE7E7E7)</td>
+            <td>Pass Color value to set border color</td>
+    </tr>
+    <tr>
+            <td>disabledBorderColor</td>
+            <td>Color(0xFFE7E7E7)</td>
+            <td>Pass Color value to show when textfield is disabled</td>
+    </tr>
+    <tr>
+            <td>styles</td>
+            <td>List<TextStyle?></td>
+            <td>Pass a list of textStyles to customize the styles of each field. TextStyle in each index matches each field. Note that length of the styles array should be equal to the numberOfFields </td>
     </tr>
     <tr>
         <td>borderRadius</td>
