@@ -1,6 +1,5 @@
 import 'package:example/verification_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
 const Color accentPurpleColor = Color(0xFF6A53A1);
 const Color accentPinkColor = Color(0xFFF99BBD);
