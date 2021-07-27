@@ -43,7 +43,7 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 ```
 
 ### Example Usage 1
-
+if you want an otp_text_field with same style or with field shaped as a box
 ![](assets/otp_textfield_style_1.gif)
 ``` 
     OtpTextField(
@@ -67,12 +67,16 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
                 }
             );
         }, // end onSubmit
-        ),
+    ),
 ``` 
 
 
 
 ### Example Usage 2
+
+if you want an otp_text_field with different styles for each field
+
+![](assets/otp_textfield_style_2.gif) 
 
 ``` 
     // if you want an otp_text_field with different 
@@ -117,10 +121,10 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
     ),
 ```
 
-![](assets/otp_textfield_style_2.gif) 
 
-### Attributes
-Customizable attributes for OtpTextField
+
+### Properties
+Customizable Properties for OtpTextField
 <table>
     <th>Attribute Name</th>
     <th>Example Value</th>
