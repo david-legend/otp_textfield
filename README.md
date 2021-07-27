@@ -43,7 +43,9 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 ```
 
 ### Example Usage 1
+
 if you want an otp_text_field with same style or with field shaped as a box
+
 ![](assets/otp_textfield_style_1.gif)
 ``` 
     OtpTextField(
