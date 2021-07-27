@@ -6,9 +6,12 @@
 
 # flutter_otp_text_field
 
-Flutter_Otp_Text_Field is a TextField widget to help display different style pin. It supports all the platforms [flutter](https://github.com/flutter/flutter) supports.
+The `flutter_otp_text_field` package for flutter is a TextField widget that allows you to display different style pin. It supports all the platforms [flutter](https://github.com/flutter/flutter) supports.
 
-## Feature 👇👇
+
+![](assets/otp_textfield_overview.gif)
+
+## Features 👇👇
 * allows you to customize the shape of textField in any way you want
 * built-in 2 commonly used pin styles of shape
 * obscure support
