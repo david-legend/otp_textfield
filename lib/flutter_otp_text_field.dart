@@ -27,6 +27,7 @@ class OtpTextField extends StatefulWidget {
   final bool enabled;
   final bool filled;
   final bool autoFocus;
+  final bool readOnly;
   final bool hasCustomInputDecoration;
   final Color fillColor;
   final BorderRadius borderRadius;
@@ -56,6 +57,7 @@ class OtpTextField extends StatefulWidget {
     this.hasCustomInputDecoration = false,
     this.filled = false,
     this.fillColor = const Color(0xFFFFFFFF),
+    this.readOnly = false,
     this.decoration,
     this.onCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
@@ -109,6 +111,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         keyboardType: widget.keyboardType,
         textAlign: TextAlign.center,
         maxLength: 1,
+        readOnly: widget.readOnly,
         style: style ?? widget.textStyle,
         autofocus: widget.autoFocus,
         cursorColor: widget.cursorColor,
