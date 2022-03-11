@@ -7,6 +7,7 @@ typedef OnCodeEnteredCompletion = void Function(String value);
 typedef OnCodeChanged = void Function(String value);
 
 class OtpTextField extends StatefulWidget {
+  final bool showCursor;
   final int numberOfFields;
   final double fieldWidth;
   final double borderWidth;
@@ -34,6 +35,7 @@ class OtpTextField extends StatefulWidget {
   final List<TextStyle?> styles;
 
   OtpTextField({
+    this.showCursor = true,
     this.numberOfFields = 4,
     this.fieldWidth = 40.0,
     this.margin = const EdgeInsets.only(right: 8.0),
@@ -106,6 +108,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
       width: widget.fieldWidth,
       margin: widget.margin,
       child: TextField(
+        showCursor: widget.showCursor,
         keyboardType: widget.keyboardType,
         textAlign: TextAlign.center,
         maxLength: 1,
