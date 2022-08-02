@@ -29,7 +29,7 @@ Install the latest version from [pub](https://pub.dartlang.org/packages/otp_text
 Add this to your package's pubspec.yaml file:
 ```
 dependencies:
-  flutter_otp_text_field: ^1.0.0
+  flutter_otp_text_field: ^1.1.0
 ```
 ### 2. Install it
 You can install packages from the command line:
