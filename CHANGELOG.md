@@ -1,3 +1,8 @@
+## [1.1.0] - 2022/08/02
+
+* added clearText to allow users to clear text
+* exposed textFields list of controllers - helps in the manipulation of text
+
 ## [0.0.1] - 2020/04/19 
 
 * added customizable input decoration

@@ -242,6 +242,11 @@ Customizable Properties for OtpTextField
         <td>Just like TextField's keyboardType, the default is TextInputType.number</td>
     </tr>
     <tr>
+        <td>clearText</td>
+        <td>Bool</td>
+        <td>When set to true, it clears all the text in the fields</td>
+    </tr>
+    <tr>
         <td>autoFocus</td>
         <td>false</td>
         <td>Same as TextField's autoFocus, the default is false</td>
@@ -260,5 +265,10 @@ Customizable Properties for OtpTextField
         <td>onCodeChanged</td>
         <td>(String code){}</td>
         <td>Executes every time a value is entered into the textField. Same as TextField's onChanged</td>
+    </tr>
+    <tr>
+        <td>handleControllers</td>
+        <td>(List<TextEditingController?> controllers){}</td>
+        <td>exposes the list of textEditingControllers to control the textFields. This can be set to a local variable for manipulation</td>
     </tr>
 </table>

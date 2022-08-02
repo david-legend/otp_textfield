@@ -37,6 +37,7 @@ List<Example> examples = [
     ),
   ),
 ];
+
 void main() {
   runApp(MyApp());
 }
@@ -54,23 +55,43 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text("Examples"),
         ),
-        body: ListView.builder(
-          itemCount: examples.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                examples[index].title,
-                style: TextStyle(fontSize: 18),
-              ),
-              onTap: () {
-                Navigator.push(context, examples[index].route);
+        body: ListView(
+          children: [
+            Builder(builder: (context) {
+              return ListTile(
+                title: Text(
+                  examples[0].title,
+                  style: TextStyle(fontSize: 18),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VerificationScreen1(),
+                    ),
+                  );
+                },
+              );
+            }),
+            Builder(
+              builder: (context) {
+                return ListTile(
+                  title: Text(
+                    examples[1].title,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VerificationScreen2(),
+                      ),
+                    );
+                  },
+                );
               },
-              subtitle: Text(
-                "Verification Screen ${index + 1}",
-                style: TextStyle(fontSize: 14),
-              ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );

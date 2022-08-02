@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 typedef OnCodeEnteredCompletion = void Function(String value);
 typedef OnCodeChanged = void Function(String value);
+typedef HandleControllers = void Function(List<TextEditingController?> controllers);
 
 class OtpTextField extends StatefulWidget {
   final bool showCursor;
@@ -23,12 +24,14 @@ class OtpTextField extends StatefulWidget {
   final CrossAxisAlignment crossAxisAlignment;
   final OnCodeEnteredCompletion? onSubmit;
   final OnCodeEnteredCompletion? onCodeChanged;
+  final HandleControllers? handleControllers;
   final bool obscureText;
   final bool showFieldAsBox;
   final bool enabled;
   final bool filled;
   final bool autoFocus;
   final bool readOnly;
+   bool clearText;
   final bool hasCustomInputDecoration;
   final Color fillColor;
   final BorderRadius borderRadius;
@@ -41,6 +44,7 @@ class OtpTextField extends StatefulWidget {
     this.fieldWidth = 40.0,
     this.margin = const EdgeInsets.only(right: 8.0),
     this.textStyle,
+    this.clearText = false,
     this.styles = const [],
     this.keyboardType = TextInputType.number,
     this.borderWidth = 2.0,
@@ -51,6 +55,7 @@ class OtpTextField extends StatefulWidget {
     this.focusedBorderColor = const Color(0xFF4F44FF),
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.handleControllers,
     this.onSubmit,
     this.obscureText = false,
     this.showFieldAsBox = false,
@@ -87,6 +92,20 @@ class _OtpTextFieldState extends State<OtpTextField> {
       widget.numberOfFields,
       null,
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant OtpTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.clearText != widget.clearText && widget.clearText == true) {
+      for (var controller in _textControllers ){
+        controller?.clear();
+      }
+      _verificationCode = List<String?>.filled(widget.numberOfFields, null);
+      setState((){
+        widget.clearText = false;
+      });
+    }
   }
 
   @override
@@ -186,8 +205,12 @@ class _OtpTextFieldState extends State<OtpTextField> {
           style: widget.styles[i],
         );
       }
+      if (widget.handleControllers != null) {
+        widget.handleControllers!(_textControllers);
+      }
       return _buildTextField(context: context, index: i);
     });
+
 
     return Row(
       mainAxisAlignment: widget.mainAxisAlignment,
