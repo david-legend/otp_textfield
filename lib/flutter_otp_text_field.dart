@@ -37,6 +37,7 @@ class OtpTextField extends StatefulWidget {
   final BorderRadius borderRadius;
   final InputDecoration? decoration;
   final List<TextStyle?> styles;
+  final List<TextInputFormatter>? inputFormatters;
 
   OtpTextField({
     this.showCursor = true,
@@ -68,6 +69,7 @@ class OtpTextField extends StatefulWidget {
     this.decoration,
     this.onCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
+    this.inputFormatters,
   })  : assert(numberOfFields > 0),
         assert(styles.length > 0
             ? styles.length == numberOfFields
@@ -140,6 +142,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         controller: _textControllers[index],
         focusNode: _focusNodes[index],
         enabled: widget.enabled,
+        inputFormatters: widget.inputFormatters,
         decoration: widget.hasCustomInputDecoration
             ? widget.decoration
             : InputDecoration(
