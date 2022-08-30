@@ -1,6 +1,6 @@
 name: flutter_otp_text_field
 description: Fully customizable OTP Entry TextField for flutter, Widget accepts pin of any length. Its written in pure dart, no extra dependency.
-version: 1.1.0
+version: 1.1.0+2
 homepage: https://github.com/david-legend/otp_textfield
 
 environment:

@@ -36,6 +36,13 @@ List<Example> examples = [
       builder: (context) => VerificationScreen2(),
     ),
   ),
+  // Example(
+  //   title: "OTP TextField Example 3",
+  //   subtitle: "Verification Screen 3",
+  //   route: MaterialPageRoute(
+  //     builder: (context) => Test(),
+  //   ),
+  // ),
 ];
 
 void main() {
@@ -91,6 +98,24 @@ class MyApp extends StatelessWidget {
                 );
               },
             ),
+            // Builder(
+            //   builder: (context) {
+            //     return ListTile(
+            //       title: Text(
+            //         examples[2].title,
+            //         style: TextStyle(fontSize: 18),
+            //       ),
+            //       onTap: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => Test(),
+            //           ),
+            //         );
+            //       },
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),
