@@ -171,6 +171,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
             value: value,
             indexOfTextField: index,
           );
+          changeFocusToPreviousNodeWhenValueIsRemoved(value: value, indexOfTextField: index);
           onSubmit(verificationCode: _verificationCode);
         },
       ),
@@ -251,6 +252,22 @@ class _OtpTextFieldState extends State<OtpTextField> {
       }
     }
   }
+
+  void changeFocusToPreviousNodeWhenValueIsRemoved({
+    required String value,
+    required int indexOfTextField,
+  }) {
+    //only change focus to the previous textField if the value entered has a length zero
+    if (value.length == 0) {
+      //if the textField in focus is not the first textField,
+      // change focus to the previous textField
+      if (indexOfTextField != 0) {
+        //change focus to the next textField
+        FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField - 1]);
+      }
+    }
+  }
+
 
   void onSubmit({required List<String?> verificationCode}) {
     if (verificationCode.every((String? code) => code != null && code != '')) {
