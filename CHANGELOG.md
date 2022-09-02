@@ -1,3 +1,7 @@
+## [1.1.1] - 2022/09/02
+
+* Added functionality to jump to previous Text field after deleting a number
+
 ## [1.1.0] - 2022/08/02
 
 * added clearText to allow users to clear text
