@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 
 typedef OnCodeEnteredCompletion = void Function(String value);
 typedef OnCodeChanged = void Function(String value);
-typedef HandleControllers = void Function(List<TextEditingController?> controllers);
+typedef HandleControllers = void Function(
+    List<TextEditingController?> controllers);
 
 class OtpTextField extends StatefulWidget {
   final bool showCursor;
@@ -31,7 +32,7 @@ class OtpTextField extends StatefulWidget {
   final bool filled;
   final bool autoFocus;
   final bool readOnly;
-   bool clearText;
+  final bool clearText;
   final bool hasCustomInputDecoration;
   final Color fillColor;
   final BorderRadius borderRadius;
@@ -71,50 +72,168 @@ class OtpTextField extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
   })  : assert(numberOfFields > 0),
-        assert(styles.length > 0
+        assert(styles.isNotEmpty
             ? styles.length == numberOfFields
-            : styles.length == 0);
+            : styles.isEmpty);
 
   @override
-  _OtpTextFieldState createState() => _OtpTextFieldState();
+  State<StatefulWidget> createState() => _OtpTextFieldState();
 }
 
 class _OtpTextFieldState extends State<OtpTextField> {
-  late List<String?> _verificationCode;
-  late List<FocusNode?> _focusNodes;
-  late List<TextEditingController?> _textControllers;
+  List<String?> _verificationCode = [];
+  List<FocusNode?> _focusNodes = [];
+  List<TextEditingController?> _textControllers = [];
 
   @override
   void initState() {
-    super.initState();
-
     _verificationCode = List<String?>.filled(widget.numberOfFields, null);
     _focusNodes = List<FocusNode?>.filled(widget.numberOfFields, null);
     _textControllers = List<TextEditingController?>.filled(
       widget.numberOfFields,
       null,
     );
+
+    super.initState();
   }
 
   @override
   void didUpdateWidget(covariant OtpTextField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if(oldWidget.clearText != widget.clearText && widget.clearText == true) {
-      for (var controller in _textControllers ){
+    if (oldWidget.clearText != widget.clearText && widget.clearText == true) {
+      for (var controller in _textControllers) {
         controller?.clear();
       }
       _verificationCode = List<String?>.filled(widget.numberOfFields, null);
-      setState((){
-        widget.clearText = false;
-      });
     }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
+    for (var controller in _textControllers) {
+      controller?.dispose();
+    }
     super.dispose();
-    _textControllers
-        .forEach((TextEditingController? controller) => controller?.dispose());
+  }
+
+  OutlineInputBorder outlineBorder(Color color) {
+    return OutlineInputBorder(
+      borderSide: BorderSide(
+        width: widget.borderWidth,
+        color: color,
+      ),
+      borderRadius: widget.borderRadius,
+    );
+  }
+
+  UnderlineInputBorder underlineInputBorder(Color color) {
+    return UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: color,
+        width: widget.borderWidth,
+      ),
+    );
+  }
+
+  Widget generateTextFields(BuildContext context) {
+    List<Widget> textFields = List.generate(widget.numberOfFields, (int i) {
+      addFocusNodeToEachTextField(index: i);
+      addTextEditingControllerToEachTextField(index: i);
+
+      if (widget.styles.isNotEmpty) {
+        return _buildTextField(
+          context: context,
+          index: i,
+          style: widget.styles[i],
+        );
+      }
+      if (widget.handleControllers != null) {
+        widget.handleControllers!(_textControllers);
+      }
+      return _buildTextField(context: context, index: i);
+    });
+
+    return Row(
+      mainAxisAlignment: widget.mainAxisAlignment,
+      crossAxisAlignment: widget.crossAxisAlignment,
+      children: textFields,
+    );
+  }
+
+  void addFocusNodeToEachTextField({required int index}) {
+    if (_focusNodes[index] == null) {
+      _focusNodes[index] = FocusNode();
+    }
+  }
+
+  void addTextEditingControllerToEachTextField({required int index}) {
+    if (_textControllers[index] == null) {
+      _textControllers[index] = TextEditingController();
+    }
+  }
+
+  void moveCursorToEnd(int index) {
+    if ((_textControllers[index]?.text.length ?? 0) == 0) return;
+
+    _textControllers[index]?.selection =
+        const TextSelection.collapsed(offset: 1);
+  }
+
+  void replaceSecondValue({
+    required String value,
+    required int indexOfTextField,
+  }) {
+    if (value.length <= 1) return;
+
+    //just replace value if input have 2 length
+    _textControllers[indexOfTextField]?.text = value.split('').last;
+  }
+
+  void changeFocusToNextNodeWhenValueIsEntered({
+    required String value,
+    required int indexOfTextField,
+  }) {
+    //only change focus to the next textField if the value entered has a length greater than one
+    if (value.isNotEmpty) {
+      //if the textField in focus is not the last textField,
+      // change focus to the next textField
+      if (indexOfTextField + 1 != widget.numberOfFields) {
+        //change focus to the next textField
+        FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField + 1]);
+      } else {
+        //if the textField in focus is the last textField, unFocus after text changed
+        _focusNodes[indexOfTextField]?.unfocus();
+      }
+    }
+  }
+
+  void changeFocusToPreviousNodeWhenValueIsRemoved({
+    required String value,
+    required int indexOfTextField,
+  }) {
+    //only change focus to the previous textField if the value entered has a length zero
+    if (value.isEmpty) {
+      //if the textField in focus is not the first textField,
+      // change focus to the previous textField
+      if (indexOfTextField != 0) {
+        //change focus to the next textField
+        FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField - 1]);
+      }
+    }
+  }
+
+  void onSubmit({required List<String?> verificationCode}) {
+    if (verificationCode.every((String? code) => code != null && code != '')) {
+      if (widget.onSubmit != null) {
+        widget.onSubmit!(verificationCode.join());
+      }
+    }
+  }
+
+  void onCodeChanged({required String verificationCode}) {
+    if (widget.onCodeChanged != null) {
+      widget.onCodeChanged!(verificationCode);
+    }
   }
 
   @override
@@ -134,7 +253,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         showCursor: widget.showCursor,
         keyboardType: widget.keyboardType,
         textAlign: TextAlign.center,
-        maxLength: 1,
+        maxLength: 2,
         readOnly: widget.readOnly,
         style: style ?? widget.textStyle,
         autofocus: widget.autoFocus,
@@ -163,123 +282,23 @@ class _OtpTextFieldState extends State<OtpTextField> {
                     : underlineInputBorder(widget.borderColor),
               ),
         obscureText: widget.obscureText,
+        onTap: () => moveCursorToEnd(index),
         onChanged: (String value) {
           //save entered value in a list
           _verificationCode[index] = value;
           onCodeChanged(verificationCode: value);
+
+          replaceSecondValue(value: value, indexOfTextField: index);
+
           changeFocusToNextNodeWhenValueIsEntered(
-            value: value,
-            indexOfTextField: index,
-          );
-          changeFocusToPreviousNodeWhenValueIsRemoved(value: value, indexOfTextField: index);
+              value: value, indexOfTextField: index);
+
+          changeFocusToPreviousNodeWhenValueIsRemoved(
+              value: value, indexOfTextField: index);
+
           onSubmit(verificationCode: _verificationCode);
         },
       ),
     );
-  }
-
-  OutlineInputBorder outlineBorder(Color color) {
-    return OutlineInputBorder(
-      borderSide: BorderSide(
-        width: widget.borderWidth,
-        color: color,
-      ),
-      borderRadius: widget.borderRadius,
-    );
-  }
-
-  UnderlineInputBorder underlineInputBorder(Color color) {
-    return UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: color,
-        width: widget.borderWidth,
-      ),
-    );
-  }
-
-  Widget generateTextFields(BuildContext context) {
-    List<Widget> textFields = List.generate(widget.numberOfFields, (int i) {
-      addFocusNodeToEachTextField(index: i);
-      addTextEditingControllerToEachTextField(index: i);
-
-      if (widget.styles.length > 0) {
-        return _buildTextField(
-          context: context,
-          index: i,
-          style: widget.styles[i],
-        );
-      }
-      if (widget.handleControllers != null) {
-        widget.handleControllers!(_textControllers);
-      }
-      return _buildTextField(context: context, index: i);
-    });
-
-
-    return Row(
-      mainAxisAlignment: widget.mainAxisAlignment,
-      crossAxisAlignment: widget.crossAxisAlignment,
-      children: textFields,
-    );
-  }
-
-  void addFocusNodeToEachTextField({required int index}) {
-    if (_focusNodes[index] == null) {
-      _focusNodes[index] = FocusNode();
-    }
-  }
-
-  void addTextEditingControllerToEachTextField({required int index}) {
-    if (_textControllers[index] == null) {
-      _textControllers[index] = TextEditingController();
-    }
-  }
-
-  void changeFocusToNextNodeWhenValueIsEntered({
-    required String value,
-    required int indexOfTextField,
-  }) {
-    //only change focus to the next textField if the value entered has a length greater than one
-    if (value.length > 0) {
-      //if the textField in focus is not the last textField,
-      // change focus to the next textField
-      if (indexOfTextField + 1 != widget.numberOfFields) {
-        //change focus to the next textField
-        FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField + 1]);
-      } else {
-        //if the textField in focus is the last textField, unFocus after text changed
-        _focusNodes[indexOfTextField]?.unfocus();
-      }
-    }
-  }
-
-  void changeFocusToPreviousNodeWhenValueIsRemoved({
-    required String value,
-    required int indexOfTextField,
-  }) {
-    //only change focus to the previous textField if the value entered has a length zero
-    if (value.length == 0) {
-      //if the textField in focus is not the first textField,
-      // change focus to the previous textField
-      if (indexOfTextField != 0) {
-        //change focus to the next textField
-        FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField - 1]);
-      }
-    }
-  }
-
-
-  void onSubmit({required List<String?> verificationCode}) {
-    if (verificationCode.every((String? code) => code != null && code != '')) {
-      if (widget.onSubmit != null) {
-        widget.onSubmit!(verificationCode.join());
-      }
-    }
-  }
-
-  void onCodeChanged({required String verificationCode}) {
-    if (widget.onCodeChanged != null) {
-      widget.onCodeChanged!(verificationCode);
-    }
   }
 }
