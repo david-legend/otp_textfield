@@ -16,7 +16,7 @@ class VerificationScreen1 extends StatefulWidget {
 class _VerificationScreen1State extends State<VerificationScreen1> {
   late List<TextStyle?> otpTextStyles;
   late List<TextEditingController?> controls;
-  int numberOfFields = 6;
+  int numberOfFields = 5;
   bool clearText = false;
 
   @override
@@ -44,40 +44,36 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
             ),
             Text("Please enter it below", style: theme.textTheme.headline6),
             Spacer(flex: 2),
-            Container(
-              color: Colors.pink,
-              child: OtpTextField(
-                numberOfFields: numberOfFields,
-                fieldHeight: 180,
-                borderColor: Color(0xFF512DA8),
-                focusedBorderColor: primaryColor,
-                clearText: clearText,
-                showFieldAsBox: true,
-                textStyle: theme.textTheme.subtitle1,
-                onCodeChanged: (String value) {
-                  //Handle each value
-                },
-                handleControllers: (controllers) {
-                  //get all textFields controller, if needed
-                  controls = controllers;
-                },
-                onSubmit: (String verificationCode) {
-                  //set clear text to clear text from all fields
-                  setState(() {
-                    clearText = true;
-                  });
-                  //navigate to different screen code goes here
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Verification Code"),
-                        content: Text('Code entered is $verificationCode'),
-                      );
-                    },
-                  );
-                }, // end onSubmit
-              ),
+            OtpTextField(
+              numberOfFields: numberOfFields,
+              borderColor: Color(0xFF512DA8),
+              focusedBorderColor: primaryColor,
+              clearText: clearText,
+              showFieldAsBox: true,
+              textStyle: theme.textTheme.subtitle1,
+              onCodeChanged: (String value) {
+                //Handle each value
+              },
+              handleControllers: (controllers) {
+                //get all textFields controller, if needed
+                controls = controllers;
+              },
+              onSubmit: (String verificationCode) {
+                //set clear text to clear text from all fields
+                setState(() {
+                  clearText = true;
+                });
+                //navigate to different screen code goes here
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Verification Code"),
+                      content: Text('Code entered is $verificationCode'),
+                    );
+                  },
+                );
+              }, // end onSubmit
             ),
             Spacer(),
             Center(
