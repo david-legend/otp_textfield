@@ -8,6 +8,7 @@ typedef OnCodeChanged = void Function(String value);
 typedef HandleControllers = void Function(
     List<TextEditingController?> controllers);
 
+// ignore: must_be_immutable
 class OtpTextField extends StatefulWidget {
   final bool showCursor;
   final int numberOfFields;
@@ -42,7 +43,7 @@ class OtpTextField extends StatefulWidget {
   final List<TextStyle?> styles;
   final List<TextInputFormatter>? inputFormatters;
 
-  OtpTextField({
+   OtpTextField({
     this.showCursor = true,
     this.numberOfFields = 4,
     this.fieldWidth = 40.0,
@@ -136,7 +137,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
       width: widget.fieldWidth,
       height: widget.fieldHeight,
       alignment: widget.alignment,
-      // margin: widget.margin,
+      margin: widget.margin,
       child: TextFormField(
         showCursor: widget.showCursor,
         keyboardType: widget.keyboardType,

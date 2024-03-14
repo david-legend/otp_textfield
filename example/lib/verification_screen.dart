@@ -50,7 +50,7 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
               focusedBorderColor: primaryColor,
               clearText: clearText,
               showFieldAsBox: true,
-              textStyle: theme.textTheme.subtitle1,
+              textStyle: theme.textTheme.titleMedium,
               onCodeChanged: (String value) {
                 //Handle each value
               },

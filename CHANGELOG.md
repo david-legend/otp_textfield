@@ -1,3 +1,7 @@
+## [1.1.2] - 2022/09/02
+
+* exposed height and alignment to api to allow setting the height and aligning the text fields
+
 ## [1.1.1] - 2022/09/02
 
 * Added functionality to jump to previous Text field after deleting a number
