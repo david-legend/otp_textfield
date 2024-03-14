@@ -1,4 +1,8 @@
-## [1.1.2] - 2022/09/02
+## [1.1.2+1] - 2024/03/14
+
+* exposed content padding 
+
+## [1.1.2] - 2024/03/14
 
 * exposed height and alignment to api to allow setting the height and aligning the text fields
 
