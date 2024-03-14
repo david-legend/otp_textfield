@@ -42,8 +42,9 @@ class OtpTextField extends StatefulWidget {
   final InputDecoration? decoration;
   final List<TextStyle?> styles;
   final List<TextInputFormatter>? inputFormatters;
+  final EdgeInsetsGeometry? contentPadding;
 
-   OtpTextField({
+  OtpTextField({
     this.showCursor = true,
     this.numberOfFields = 4,
     this.fieldWidth = 40.0,
@@ -76,6 +77,7 @@ class OtpTextField extends StatefulWidget {
     this.onCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
+    this.contentPadding,
   })  : assert(numberOfFields > 0),
         assert(styles.length > 0
             ? styles.length == numberOfFields
@@ -169,6 +171,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
                 border: widget.showFieldAsBox
                     ? outlineBorder(widget.borderColor)
                     : underlineInputBorder(widget.borderColor),
+                contentPadding: widget.contentPadding,
               ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
