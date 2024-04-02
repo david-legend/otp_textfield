@@ -1,5 +1,7 @@
 library flutter_otp_text_field;
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -127,7 +129,15 @@ class _OtpTextFieldState extends State<OtpTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return generateTextFields(context);
+    // Listens for backspace key event when textfield is empty. Moves to previous node if possible.
+    return RawKeyboardListener(
+        focusNode: FocusNode(),
+        onKey: (value) {
+          if (value.logicalKey.keyLabel == 'Backspace') {
+            changeFocusToPreviousNodeWhenTapBackspace();
+          }
+        },
+        child: generateTextFields(context));
   }
 
   Widget _buildTextField({
@@ -264,10 +274,21 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
+  // A flag to eliminate race condition between [changeFocusToPreviousNodeWhenValueIsRemoved] and [changeFocusToPreviousNodeWhenTapBackspace]
+  bool _backspaceHandled = false;
+
   void changeFocusToPreviousNodeWhenValueIsRemoved({
     required String value,
     required int indexOfTextField,
   }) {
+    // Race condition eliminator
+    _backspaceHandled = true;
+    Future.delayed(
+      Duration(milliseconds: 100),
+      () {
+        _backspaceHandled = false;
+      },
+    );
     //only change focus to the previous textField if the value entered has a length zero
     if (value.length == 0) {
       //if the textField in focus is not the first textField,
@@ -276,6 +297,21 @@ class _OtpTextFieldState extends State<OtpTextField> {
         //change focus to the next textField
         FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField - 1]);
       }
+    }
+  }
+
+  void changeFocusToPreviousNodeWhenTapBackspace() async {
+    // Wait because this is running before [changeFocusToPreviousNodeWhenValueIsRemoved]
+    await Future.delayed(Duration(milliseconds: 50));
+    if (_backspaceHandled) return;
+    try {
+      final index =
+          _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
+      if (index > 0) {
+        FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
+      }
+    } catch (e) {
+      log('Cannot focus on the previous field');
     }
   }
 
