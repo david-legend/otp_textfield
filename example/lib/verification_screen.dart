@@ -25,14 +25,16 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text("OTP TextField Example 1"),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 16),
             Text(
               "Verification Code",
               style: theme.textTheme.headline4,
@@ -130,8 +132,9 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
     ];
     return Scaffold(
       appBar: AppBar(
+        title: Text("OTP TextField Example 2"),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 24),
@@ -157,7 +160,17 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
               showFieldAsBox: false,
               borderWidth: 4.0,
               onCodeChanged: (String code) {},
-              onSubmit: (String verificationCode) {}, // end onSubmit
+              onSubmit: (String verificationCode) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Verification Code"),
+                      content: Text('Code entered is $verificationCode'),
+                    );
+                  },
+                );
+              }, // end onSubmit
             ),
             Spacer(),
             Center(
@@ -285,21 +298,16 @@ class CustomButton extends StatelessWidget {
       onPressed: onPressed,
       elevation: elevation,
       shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.only(
-          topLeft: const Radius.circular(30.0),
-          bottomLeft: const Radius.circular(30.0),
+        borderRadius: const BorderRadius.all(
+            const Radius.circular(30),
         ),
       ),
       height: height,
+      minWidth: MediaQuery.of(context).size.width - 64,
       color: color,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: textStyle,
-          )
-        ],
+      child: Text(
+        title,
+        style: textStyle,
       ),
     );
   }
