@@ -29,7 +29,7 @@ class OtpTextField extends StatefulWidget {
   final MainAxisAlignment mainAxisAlignment;
   final CrossAxisAlignment crossAxisAlignment;
   final OnCodeEnteredCompletion? onSubmit;
-  final OnCodeEnteredCompletion? onCodeChanged;
+  final OnCodeChanged? onCodeChanged;
   final HandleControllers? handleControllers;
   final bool obscureText;
   final bool showFieldAsBox;
@@ -42,11 +42,11 @@ class OtpTextField extends StatefulWidget {
   final Color fillColor;
   final BorderRadius borderRadius;
   final InputDecoration? decoration;
-  final List<TextStyle?> styles;
   final List<TextInputFormatter>? inputFormatters;
   final EdgeInsetsGeometry? contentPadding;
 
   OtpTextField({
+    super.key,
     this.showCursor = true,
     this.numberOfFields = 4,
     this.fieldWidth = 40.0,
@@ -55,7 +55,6 @@ class OtpTextField extends StatefulWidget {
     this.margin = const EdgeInsets.only(right: 8.0),
     this.textStyle,
     this.clearText = false,
-    this.styles = const [],
     this.keyboardType = TextInputType.number,
     this.borderWidth = 2.0,
     this.cursorColor,
@@ -80,19 +79,19 @@ class OtpTextField extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
     this.contentPadding,
-  })  : assert(numberOfFields > 0),
-        assert(styles.length > 0
-            ? styles.length == numberOfFields
-            : styles.length == 0);
+  }) : assert(numberOfFields > 0);
 
   @override
-  _OtpTextFieldState createState() => _OtpTextFieldState();
+  createState() => _OtpTextFieldState();
 }
 
 class _OtpTextFieldState extends State<OtpTextField> {
   late List<String?> _verificationCode;
   late List<FocusNode?> _focusNodes;
   late List<TextEditingController?> _textControllers;
+
+  // append "empty" inside textFields
+  final emptyCharacter = '\u200b';
 
   @override
   void initState() {
@@ -123,21 +122,17 @@ class _OtpTextFieldState extends State<OtpTextField> {
   @override
   void dispose() {
     super.dispose();
-    _textControllers
-        .forEach((TextEditingController? controller) => controller?.dispose());
+    for (var controller in _textControllers) {
+      controller?.dispose();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Listens for backspace key event when textfield is empty. Moves to previous node if possible.
-    return RawKeyboardListener(
-        focusNode: FocusNode(),
-        onKey: (value) {
-          if (value.logicalKey.keyLabel == 'Backspace') {
-            changeFocusToPreviousNodeWhenTapBackspace();
-          }
-        },
-        child: generateTextFields(context));
+    // Listens for backspace key event when textfield is empty.
+    // Moves to previous node if possible.
+    // \u200b
+    return generateTextFields(context);
   }
 
   Widget _buildTextField({
@@ -154,7 +149,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         showCursor: widget.showCursor,
         keyboardType: widget.keyboardType,
         textAlign: TextAlign.center,
-        maxLength: 1,
+        maxLength: 2,
         readOnly: widget.readOnly,
         style: style ?? widget.textStyle,
         autofocus: widget.autoFocus,
@@ -185,16 +180,27 @@ class _OtpTextFieldState extends State<OtpTextField> {
               ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
-          //save entered value in a list
-          _verificationCode[index] = value;
-          onCodeChanged(verificationCode: value);
-          changeFocusToNextNodeWhenValueIsEntered(
-            value: value,
-            indexOfTextField: index,
-          );
-          changeFocusToPreviousNodeWhenValueIsRemoved(
-              value: value, indexOfTextField: index);
-          onSubmit(verificationCode: _verificationCode);
+          if (value == emptyCharacter) {
+            return;
+          } else {
+            _textControllers[index]?.text =
+                value.replaceAll(emptyCharacter, '');
+          }
+
+          if (value.isEmpty) {
+            changeFocusToPreviousNodeWhenTapBackspace();
+          } else {
+            //save entered value in a list
+            _verificationCode[index] = value;
+            onCodeChanged(verificationCode: value);
+            changeFocusToNextNodeWhenValueIsEntered(
+              value: value,
+              indexOfTextField: index,
+            );
+            changeFocusToPreviousNodeWhenValueIsRemoved(
+                value: value, indexOfTextField: index);
+            onSubmit(verificationCode: _verificationCode);
+          }
         },
       ),
     );
@@ -224,13 +230,6 @@ class _OtpTextFieldState extends State<OtpTextField> {
       addFocusNodeToEachTextField(index: i);
       addTextEditingControllerToEachTextField(index: i);
 
-      if (widget.styles.length > 0) {
-        return _buildTextField(
-          context: context,
-          index: i,
-          style: widget.styles[i],
-        );
-      }
       if (widget.handleControllers != null) {
         widget.handleControllers!(_textControllers);
       }
@@ -260,21 +259,26 @@ class _OtpTextFieldState extends State<OtpTextField> {
     required String value,
     required int indexOfTextField,
   }) {
-    //only change focus to the next textField if the value entered has a length greater than one
-    if (value.length > 0) {
+    //only change focus to the next textField if the value entered
+    // has a length greater than one
+    if (value.isNotEmpty) {
       //if the textField in focus is not the last textField,
       // change focus to the next textField
       if (indexOfTextField + 1 != widget.numberOfFields) {
         //change focus to the next textField
         FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField + 1]);
+        _textControllers[indexOfTextField + 1]?.text = emptyCharacter;
       } else {
-        //if the textField in focus is the last textField, unFocus after text changed
+        //if the textField in focus is the last textField,
+        // unFocus after text changed
         _focusNodes[indexOfTextField]?.unfocus();
       }
     }
   }
 
-  // A flag to eliminate race condition between [changeFocusToPreviousNodeWhenValueIsRemoved] and [changeFocusToPreviousNodeWhenTapBackspace]
+  // A flag to eliminate race condition between
+  // [changeFocusToPreviousNodeWhenValueIsRemoved] and
+  // [changeFocusToPreviousNodeWhenTapBackspace]
   bool _backspaceHandled = false;
 
   void changeFocusToPreviousNodeWhenValueIsRemoved({
@@ -284,13 +288,14 @@ class _OtpTextFieldState extends State<OtpTextField> {
     // Race condition eliminator
     _backspaceHandled = true;
     Future.delayed(
-      Duration(milliseconds: 100),
+      const Duration(milliseconds: 100),
       () {
         _backspaceHandled = false;
       },
     );
-    //only change focus to the previous textField if the value entered has a length zero
-    if (value.length == 0) {
+    //only change focus to the previous textField if the value entered
+    // has a length zero
+    if (value.isEmpty) {
       //if the textField in focus is not the first textField,
       // change focus to the previous textField
       if (indexOfTextField != 0) {
@@ -301,14 +306,17 @@ class _OtpTextFieldState extends State<OtpTextField> {
   }
 
   void changeFocusToPreviousNodeWhenTapBackspace() async {
-    // Wait because this is running before [changeFocusToPreviousNodeWhenValueIsRemoved]
-    await Future.delayed(Duration(milliseconds: 50));
+    // Wait because this is running before
+    // [changeFocusToPreviousNodeWhenValueIsRemoved]
+    await Future.delayed(const Duration(milliseconds: 50));
     if (_backspaceHandled) return;
     try {
       final index =
           _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
       if (index > 0) {
         FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
+        _textControllers[index - 1]?.text = emptyCharacter;
+        _verificationCode[index] = '';
       }
     } catch (e) {
       log('Cannot focus on the previous field');
@@ -316,9 +324,12 @@ class _OtpTextFieldState extends State<OtpTextField> {
   }
 
   void onSubmit({required List<String?> verificationCode}) {
-    if (verificationCode.every((String? code) => code != null && code != '')) {
+    // remove extra emptyCharacter leaving the otp to be submitted
+    if (verificationCode.every((String? code) =>
+        code != null && code != '' && code != emptyCharacter)) {
       if (widget.onSubmit != null) {
-        widget.onSubmit!(verificationCode.join());
+        widget
+            .onSubmit!(verificationCode.join().replaceAll(emptyCharacter, ''));
       }
     }
   }
