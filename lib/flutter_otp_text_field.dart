@@ -42,6 +42,7 @@ class OtpTextField extends StatefulWidget {
   final Color fillColor;
   final BorderRadius borderRadius;
   final InputDecoration? decoration;
+  final List<TextStyle?> styles;
   final List<TextInputFormatter>? inputFormatters;
   final EdgeInsetsGeometry? contentPadding;
 
@@ -55,6 +56,7 @@ class OtpTextField extends StatefulWidget {
     this.margin = const EdgeInsets.only(right: 8.0),
     this.textStyle,
     this.clearText = false,
+    this.styles = const [],
     this.keyboardType = TextInputType.number,
     this.borderWidth = 2.0,
     this.cursorColor,
@@ -79,10 +81,13 @@ class OtpTextField extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
     this.contentPadding,
-  }) : assert(numberOfFields > 0);
+  })  : assert(numberOfFields > 0),
+        assert(styles.isNotEmpty
+            ? styles.length == numberOfFields
+            : styles.isEmpty);
 
   @override
-  createState() => _OtpTextFieldState();
+  _OtpTextFieldState createState() => _OtpTextFieldState();
 }
 
 class _OtpTextFieldState extends State<OtpTextField> {
