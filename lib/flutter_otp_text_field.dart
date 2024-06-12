@@ -30,6 +30,7 @@ class OtpTextField extends StatefulWidget {
   final CrossAxisAlignment crossAxisAlignment;
   final OnCodeEnteredCompletion? onSubmit;
   final OnCodeEnteredCompletion? onCodeChanged;
+  final OnCodeEnteredCompletion? onVerificationCodeChanged;
   final HandleControllers? handleControllers;
   final bool obscureText;
   final bool showFieldAsBox;
@@ -77,6 +78,7 @@ class OtpTextField extends StatefulWidget {
     this.readOnly = false,
     this.decoration,
     this.onCodeChanged,
+    this.onVerificationCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
     this.contentPadding,
@@ -316,6 +318,9 @@ class _OtpTextFieldState extends State<OtpTextField> {
   }
 
   void onSubmit({required List<String?> verificationCode}) {
+    if (widget.onVerificationCodeChanged != null) {
+      widget.onVerificationCodeChanged!(verificationCode.where((code) => code != null).toList().join());
+    }
     if (verificationCode.every((String? code) => code != null && code != '')) {
       if (widget.onSubmit != null) {
         widget.onSubmit!(verificationCode.join());
