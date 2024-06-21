@@ -39,6 +39,7 @@ class OtpTextField extends StatefulWidget {
   final bool autoFocus;
   final bool readOnly;
   bool clearText;
+  final clearOnSubmit;
   final bool hasCustomInputDecoration;
   final Color fillColor;
   final BorderRadius borderRadius;
@@ -56,6 +57,7 @@ class OtpTextField extends StatefulWidget {
     this.margin = const EdgeInsets.only(right: 8.0),
     this.textStyle,
     this.clearText = false,
+    this.clearOnSubmit = false,
     this.styles = const [],
     this.keyboardType = TextInputType.number,
     this.borderWidth = 2.0,
@@ -287,7 +289,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     _backspaceHandled = true;
     Future.delayed(
       Duration(milliseconds: 100),
-      () {
+          () {
         _backspaceHandled = false;
       },
     );
@@ -308,7 +310,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     if (_backspaceHandled) return;
     try {
       final index =
-          _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
+      _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
       if (index > 0) {
         FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
       }
@@ -324,8 +326,19 @@ class _OtpTextFieldState extends State<OtpTextField> {
     if (verificationCode.every((String? code) => code != null && code != '')) {
       if (widget.onSubmit != null) {
         widget.onSubmit!(verificationCode.join());
+
+        if (widget.clearOnSubmit) {
+          clearFields();
+        }
       }
     }
+  }
+
+  void clearFields() {
+    for (var controller in _textControllers) {
+      controller?.clear();
+    }
+    _verificationCode = List<String?>.filled(widget.numberOfFields, null);
   }
 
   void onCodeChanged({required String verificationCode}) {
