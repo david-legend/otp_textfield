@@ -37,6 +37,7 @@ class OtpTextField extends StatefulWidget {
   final bool filled;
   final bool autoFocus;
   final bool readOnly;
+  final String? obscuringCharacter;
   bool clearText;
   final bool hasCustomInputDecoration;
   final Color fillColor;
@@ -75,6 +76,7 @@ class OtpTextField extends StatefulWidget {
     this.filled = false,
     this.fillColor = const Color(0xFFFFFFFF),
     this.readOnly = false,
+    this.obscuringCharacter,
     this.decoration,
     this.onCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
@@ -162,6 +164,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         controller: _textControllers[index],
         focusNode: _focusNodes[index],
         enabled: widget.enabled,
+        obscuringCharacter: widget.obscuringCharacter ?? "*",
         inputFormatters: widget.inputFormatters,
         decoration: widget.hasCustomInputDecoration
             ? widget.decoration
