@@ -154,7 +154,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         showCursor: widget.showCursor,
         keyboardType: widget.keyboardType,
         textAlign: TextAlign.center,
-        maxLength: 1,
+        maxLength: widget.numberOfFields,
         readOnly: widget.readOnly,
         style: style ?? widget.textStyle,
         autofocus: widget.autoFocus,
@@ -185,6 +185,18 @@ class _OtpTextFieldState extends State<OtpTextField> {
               ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
+          if (value.length <= 1) {
+            _verificationCode[index] = value;
+            onCodeChanged(verificationCode: value);
+            changeFocusToNextNodeWhenValueIsEntered(
+              value: value,
+              indexOfTextField: index,
+            );
+            changeFocusToPreviousNodeWhenValueIsRemoved(
+                value: value, indexOfTextField: index);
+          } else {
+            _handlePaste(value);
+          }
           //save entered value in a list
           _verificationCode[index] = value;
           onCodeChanged(verificationCode: value);
@@ -327,5 +339,21 @@ class _OtpTextFieldState extends State<OtpTextField> {
     if (widget.onCodeChanged != null) {
       widget.onCodeChanged!(verificationCode);
     }
+  }
+
+  void _handlePaste(String str) {
+    if (str.length > widget.numberOfFields) {
+      str = str.substring(0, widget.numberOfFields);
+    }
+
+    for (int i = 0; i < str.length; i++) {
+      String digit = str.substring(i, i + 1);
+      _textControllers[i]!.text = digit;
+      _textControllers[i]!.value = TextEditingValue(text: digit);
+      _verificationCode[i] = digit;
+    }
+
+    FocusScope.of(context).requestFocus(_focusNodes[widget.numberOfFields - 1]);
+    setState(() {});
   }
 }
