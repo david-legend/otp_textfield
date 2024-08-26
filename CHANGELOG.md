@@ -1,3 +1,7 @@
+## [1.2.0] - 2024/03/14
+
+* Keyboard Listener: Allow pasting OTP codes directly for a more convenient and efficient experience
+
 ## [1.1.2+1] - 2024/03/14
 
 * exposed content padding 
