@@ -35,14 +35,14 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
           children: [
             Text(
               "Verification Code",
-              style: theme.textTheme.headline4,
+              style: theme.textTheme.bodyMedium,
             ),
             SizedBox(height: 16),
             Text(
               "We texted you a code",
-              style: theme.textTheme.headline6,
+              style: theme.textTheme.bodyMedium,
             ),
-            Text("Please enter it below", style: theme.textTheme.headline6),
+            Text("Please enter it below", style: theme.textTheme.bodyMedium),
             Spacer(flex: 2),
             OtpTextField(
               numberOfFields: numberOfFields,
@@ -82,14 +82,14 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
                 child: Text(
                   "This helps us verify every user in our market place",
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyText1,
+                  style: theme.textTheme.bodyMedium,
                 ),
               ),
             ),
             Center(
               child: Text(
                 "Didn't get code?",
-                style: theme.textTheme.subtitle1,
+                style: theme.textTheme.bodyMedium,
               ),
             ),
             Spacer(flex: 3),
@@ -97,7 +97,7 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
               onPressed: () {},
               title: "Confirm",
               color: primaryColor,
-              textStyle: theme.textTheme.subtitle1?.copyWith(
+              textStyle: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
             ),
@@ -140,14 +140,14 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
           children: [
             Text(
               "Verification Code",
-              style: theme.textTheme.headline4,
+              style: theme.textTheme.bodyMedium,
             ),
             SizedBox(height: 16),
             Text(
               "We texted you a code",
-              style: theme.textTheme.headline6,
+              style: theme.textTheme.bodyMedium,
             ),
-            Text("Please enter it below", style: theme.textTheme.headline6),
+            Text("Please enter it below", style: theme.textTheme.bodyMedium),
             Spacer(flex: 2),
             OtpTextField(
               numberOfFields: 6,
@@ -166,14 +166,14 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
                 child: Text(
                   "This helps us verify every user in our market place",
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyText1,
+                  style: theme.textTheme.bodyMedium,
                 ),
               ),
             ),
             Center(
               child: Text(
                 "Didn't get code?",
-                style: theme.textTheme.subtitle1,
+                style: theme.textTheme.bodyMedium,
               ),
             ),
             Spacer(flex: 3),
@@ -181,7 +181,7 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
               onPressed: () {},
               title: "Confirm",
               color: primaryColor,
-              textStyle: theme.textTheme.subtitle1?.copyWith(
+              textStyle: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
             ),
@@ -194,7 +194,7 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
 
   TextStyle? createStyle(Color color) {
     ThemeData theme = Theme.of(context);
-    return theme.textTheme.headline3?.copyWith(color: color);
+    return theme.textTheme.bodyLarge?.copyWith(color: color);
   }
 }
 
