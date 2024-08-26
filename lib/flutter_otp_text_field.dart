@@ -130,14 +130,15 @@ class _OtpTextFieldState extends State<OtpTextField> {
   @override
   Widget build(BuildContext context) {
     // Listens for backspace key event when textfield is empty. Moves to previous node if possible.
-    return RawKeyboardListener(
-        focusNode: FocusNode(),
-        onKey: (value) {
-          if (value.logicalKey.keyLabel == 'Backspace') {
-            changeFocusToPreviousNodeWhenTapBackspace();
-          }
-        },
-        child: generateTextFields(context));
+    return KeyboardListener(
+      focusNode: FocusNode(),
+      onKeyEvent: (value) {
+        if (value.logicalKey.keyLabel == 'Backspace') {
+          changeFocusToPreviousNodeWhenTapBackspace();
+        }
+      },
+      child: generateTextFields(context),
+    );
   }
 
   Widget _buildTextField({
