@@ -30,6 +30,7 @@ class OtpTextField extends StatefulWidget {
   final CrossAxisAlignment crossAxisAlignment;
   final OnCodeEnteredCompletion? onSubmit;
   final OnCodeEnteredCompletion? onCodeChanged;
+  final OnCodeEnteredCompletion? onVerificationCodeChanged;
   final HandleControllers? handleControllers;
   final bool obscureText;
   final bool showFieldAsBox;
@@ -38,6 +39,7 @@ class OtpTextField extends StatefulWidget {
   final bool autoFocus;
   final bool readOnly;
   bool clearText;
+  final clearOnSubmit;
   final bool hasCustomInputDecoration;
   final Color fillColor;
   final BorderRadius borderRadius;
@@ -55,6 +57,7 @@ class OtpTextField extends StatefulWidget {
     this.margin = const EdgeInsets.only(right: 8.0),
     this.textStyle,
     this.clearText = false,
+    this.clearOnSubmit = false,
     this.styles = const [],
     this.keyboardType = TextInputType.number,
     this.borderWidth = 2.0,
@@ -77,6 +80,7 @@ class OtpTextField extends StatefulWidget {
     this.readOnly = false,
     this.decoration,
     this.onCodeChanged,
+    this.onVerificationCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
     this.contentPadding,
@@ -329,11 +333,25 @@ class _OtpTextFieldState extends State<OtpTextField> {
   }
 
   void onSubmit({required List<String?> verificationCode}) {
+    if (widget.onVerificationCodeChanged != null) {
+      widget.onVerificationCodeChanged!(verificationCode.where((code) => code != null).toList().join());
+    }
     if (verificationCode.every((String? code) => code != null && code != '')) {
       if (widget.onSubmit != null) {
         widget.onSubmit!(verificationCode.join());
+
+        if (widget.clearOnSubmit) {
+          clearFields();
+        }
       }
     }
+  }
+
+  void clearFields() {
+    for (var controller in _textControllers) {
+      controller?.clear();
+    }
+    _verificationCode = List<String?>.filled(widget.numberOfFields, null);
   }
 
   void onCodeChanged({required String verificationCode}) {
