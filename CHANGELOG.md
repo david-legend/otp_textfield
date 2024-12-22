@@ -1,3 +1,7 @@
+## [1.3.0] - 2024/03/14
+
+* Fixed a bug where backspace did not properly shift focus to the previous input field.
+
 ## [1.2.0] - 2024/03/14
 
 * Keyboard Listener: Allow pasting OTP codes directly for a more convenient and efficient experience

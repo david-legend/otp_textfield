@@ -80,7 +80,8 @@ class OtpTextField extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
     this.contentPadding,
-  })  : assert(numberOfFields > 0),
+  })
+      : assert(numberOfFields > 0),
         assert(styles.length > 0
             ? styles.length == numberOfFields
             : styles.length == 0);
@@ -194,7 +195,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
               indexOfTextField: index,
             );
             changeFocusToPreviousNodeWhenValueIsRemoved(
-                value: value, indexOfTextField: index);
+              value: value, indexOfTextField: index);
           } else {
             _handlePaste(value);
           }
@@ -313,17 +314,25 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
+  // Changes focus to the previous input field when backspace is tapped
   void changeFocusToPreviousNodeWhenTapBackspace() async {
-    // Wait because this is running before [changeFocusToPreviousNodeWhenValueIsRemoved]
+    // Wait briefly because this function is executed before
+    // [changeFocusToPreviousNodeWhenValueIsRemoved]
     await Future.delayed(Duration(milliseconds: 50));
+
+    // If backspace handling is already done, exit the function
     if (_backspaceHandled) return;
     try {
+      // Find the index of the currently focused field
       final index =
       _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
+
+      // If not at the first field, move focus to the previous field
       if (index > 0) {
         FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
       }
     } catch (e) {
+      // Log an error if focus cannot be moved
       log('Cannot focus on the previous field');
     }
   }
@@ -342,18 +351,29 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
+
+  // Handles the pasting of a string into the input fields
   void _handlePaste(String str) {
+    // If the pasted string is longer than the number of input fields, trim it
     if (str.length > widget.numberOfFields) {
       str = str.substring(0, widget.numberOfFields);
     }
-
+    // Iterate through the string, character by character
     for (int i = 0; i < str.length; i++) {
+      // Extract the current character (digit)
       String digit = str.substring(i, i + 1);
+
+      // Update the text in the corresponding text controller
       _textControllers[i]!.text = digit;
+
+      // Set the text value explicitly for the controller
       _textControllers[i]!.value = TextEditingValue(text: digit);
+
+      // Update the verification code array with the digit
       _verificationCode[i] = digit;
     }
 
+    // Move the focus to the last input field and refresh the UI
     FocusScope.of(context).requestFocus(_focusNodes[widget.numberOfFields - 1]);
     setState(() {});
   }
