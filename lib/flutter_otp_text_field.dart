@@ -80,8 +80,7 @@ class OtpTextField extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.inputFormatters,
     this.contentPadding,
-  })
-      : assert(numberOfFields > 0),
+  })  : assert(numberOfFields > 0),
         assert(styles.length > 0
             ? styles.length == numberOfFields
             : styles.length == 0);
@@ -133,9 +132,12 @@ class _OtpTextFieldState extends State<OtpTextField> {
     // Listens for backspace key event when textfield is empty. Moves to previous node if possible.
     return KeyboardListener(
       focusNode: FocusNode(),
-      onKeyEvent: (value) {
-        if (value.logicalKey.keyLabel == 'Backspace') {
-          changeFocusToPreviousNodeWhenTapBackspace();
+      onKeyEvent: (event) {
+        if (event.logicalKey.keyLabel == 'Backspace') {
+          // KeyDownEvent actually fires when the key is released
+          if (event is KeyDownEvent) {
+            changeFocusToPreviousNodeWhenTapBackspace();
+          }
         }
       },
       child: generateTextFields(context),
@@ -168,47 +170,31 @@ class _OtpTextFieldState extends State<OtpTextField> {
         decoration: widget.hasCustomInputDecoration
             ? widget.decoration
             : InputDecoration(
-          counterText: "",
-          filled: widget.filled,
-          fillColor: widget.fillColor,
-          focusedBorder: widget.showFieldAsBox
-              ? outlineBorder(widget.focusedBorderColor)
-              : underlineInputBorder(widget.focusedBorderColor),
-          enabledBorder: widget.showFieldAsBox
-              ? outlineBorder(widget.enabledBorderColor)
-              : underlineInputBorder(widget.enabledBorderColor),
-          disabledBorder: widget.showFieldAsBox
-              ? outlineBorder(widget.disabledBorderColor)
-              : underlineInputBorder(widget.disabledBorderColor),
-          border: widget.showFieldAsBox
-              ? outlineBorder(widget.borderColor)
-              : underlineInputBorder(widget.borderColor),
-          contentPadding: widget.contentPadding,
-        ),
+                counterText: "",
+                filled: widget.filled,
+                fillColor: widget.fillColor,
+                focusedBorder: widget.showFieldAsBox
+                    ? outlineBorder(widget.focusedBorderColor)
+                    : underlineInputBorder(widget.focusedBorderColor),
+                enabledBorder: widget.showFieldAsBox
+                    ? outlineBorder(widget.enabledBorderColor)
+                    : underlineInputBorder(widget.enabledBorderColor),
+                disabledBorder: widget.showFieldAsBox
+                    ? outlineBorder(widget.disabledBorderColor)
+                    : underlineInputBorder(widget.disabledBorderColor),
+                border: widget.showFieldAsBox
+                    ? outlineBorder(widget.borderColor)
+                    : underlineInputBorder(widget.borderColor),
+                contentPadding: widget.contentPadding,
+              ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
           if (value.length <= 1) {
             _verificationCode[index] = value;
-            onCodeChanged(verificationCode: value);
-            changeFocusToNextNodeWhenValueIsEntered(
-              value: value,
-              indexOfTextField: index,
-            );
-            changeFocusToPreviousNodeWhenValueIsRemoved(
-              value: value, indexOfTextField: index);
+            _onDigitEntered(value, index);
           } else {
             _handlePaste(value);
           }
-          //save entered value in a list
-          _verificationCode[index] = value;
-          onCodeChanged(verificationCode: value);
-          changeFocusToNextNodeWhenValueIsEntered(
-            value: value,
-            indexOfTextField: index,
-          );
-          changeFocusToPreviousNodeWhenValueIsRemoved(
-              value: value, indexOfTextField: index);
-          onSubmit(verificationCode: _verificationCode);
         },
       ),
     );
@@ -288,44 +274,12 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
-  // A flag to eliminate race condition between [changeFocusToPreviousNodeWhenValueIsRemoved] and [changeFocusToPreviousNodeWhenTapBackspace]
-  bool _backspaceHandled = false;
-
-  void changeFocusToPreviousNodeWhenValueIsRemoved({
-    required String value,
-    required int indexOfTextField,
-  }) {
-    // Race condition eliminator
-    _backspaceHandled = true;
-    Future.delayed(
-      Duration(milliseconds: 100),
-          () {
-        _backspaceHandled = false;
-      },
-    );
-    //only change focus to the previous textField if the value entered has a length zero
-    if (value.length == 0) {
-      //if the textField in focus is not the first textField,
-      // change focus to the previous textField
-      if (indexOfTextField != 0) {
-        //change focus to the next textField
-        FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField - 1]);
-      }
-    }
-  }
-
   // Changes focus to the previous input field when backspace is tapped
-  void changeFocusToPreviousNodeWhenTapBackspace() async {
-    // Wait briefly because this function is executed before
-    // [changeFocusToPreviousNodeWhenValueIsRemoved]
-    await Future.delayed(Duration(milliseconds: 50));
-
-    // If backspace handling is already done, exit the function
-    if (_backspaceHandled) return;
+  void changeFocusToPreviousNodeWhenTapBackspace() {
     try {
       // Find the index of the currently focused field
       final index =
-      _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
+          _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
 
       // If not at the first field, move focus to the previous field
       if (index > 0) {
@@ -351,10 +305,18 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
+  _onDigitEntered(String digit, int index) {
+    onCodeChanged(verificationCode: digit);
+    changeFocusToNextNodeWhenValueIsEntered(
+      value: digit,
+      indexOfTextField: index,
+    );
+    setState(() {
+      onSubmit(verificationCode: _verificationCode);
+    });
+  }
 
-  // Handles the pasting of a string into the input fields
-  void _handlePaste(String str) {
-    // If the pasted string is longer than the number of input fields, trim it
+  _handlePaste(String str) {
     if (str.length > widget.numberOfFields) {
       str = str.substring(0, widget.numberOfFields);
     }
@@ -371,10 +333,10 @@ class _OtpTextFieldState extends State<OtpTextField> {
 
       // Update the verification code array with the digit
       _verificationCode[i] = digit;
-    }
 
-    // Move the focus to the last input field and refresh the UI
-    FocusScope.of(context).requestFocus(_focusNodes[widget.numberOfFields - 1]);
-    setState(() {});
+      _onDigitEntered(digit, i);
+
+      setState(() {});
+    }
   }
 }
