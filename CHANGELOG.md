@@ -1,6 +1,14 @@
-## [1.3.0] - 2024/03/14
+## [1.4.0] - 2024/12/23
+
+* Fixed issue where KeyboardListener would run twice and cause cursor to skip a text field
+* Fixed issue where auto-filling would only enter a value in the first input field
+* Fixed issue where pasting the OTP would only advance the focus to the second field, and would not submit the form
+
+
+## [1.3.0] - 2024/12/22
 
 * Fixed a bug where backspace did not properly shift focus to the previous input field.
+
 
 ## [1.2.0] - 2024/03/14
 

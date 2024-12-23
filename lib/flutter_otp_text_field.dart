@@ -12,38 +12,71 @@ typedef HandleControllers = void Function(
 
 // ignore: must_be_immutable
 class OtpTextField extends StatefulWidget {
+  /// allows to show or disable cursor
   final bool showCursor;
+  /// specify number of fields, defaults to 4
   final int numberOfFields;
+  /// width of each text field
   final double fieldWidth;
+  /// height of each text field
   final double? fieldHeight;
+  /// border width of each text field
   final double borderWidth;
+  /// aligns text fields in container
   final Alignment? alignment;
+  /// color of enabled border
   final Color enabledBorderColor;
+  /// color of focused border
   final Color focusedBorderColor;
+  /// color of disabled border
   final Color disabledBorderColor;
+  /// handles color of border
   final Color borderColor;
+  /// handles color of cursor
   final Color? cursorColor;
+  /// handles margin in between text fields
   final EdgeInsetsGeometry margin;
+  /// controls keyboard type
   final TextInputType keyboardType;
+  /// handles textStyle of digit in textField
   final TextStyle? textStyle;
+  /// handles mainAxisAlignment of textFields in Row
   final MainAxisAlignment mainAxisAlignment;
+  /// handles crossAxisAlignment of textFields in Row
   final CrossAxisAlignment crossAxisAlignment;
+  /// callBack called when last textField is filled
   final OnCodeEnteredCompletion? onSubmit;
+  /// callBack called when code in textField changes
   final OnCodeEnteredCompletion? onCodeChanged;
+  /// textEditing controller handler
   final HandleControllers? handleControllers;
+  /// handles visibility of text in textField
   final bool obscureText;
+  /// if true, uses outlineBorder, if false underlineBorder
   final bool showFieldAsBox;
+  /// if true, sets textFields to enabled
   final bool enabled;
+  /// If true the decoration's container is filled with [fillColor].
   final bool filled;
+  /// handles autoFocus
   final bool autoFocus;
+  /// if true, sets content of textField to be readOnly
   final bool readOnly;
+  /// clears text
   bool clearText;
+  /// if true, custom Input decoration that is passed in takes effect
   final bool hasCustomInputDecoration;
+  /// sets fill color of textField
   final Color fillColor;
+  /// sets borderRadius of textField
   final BorderRadius borderRadius;
+  /// sets InputDecoration
   final InputDecoration? decoration;
+  /// sets custom styles for textFields
   final List<TextStyle?> styles;
+  /// sets inputFormatters for textFields
   final List<TextInputFormatter>? inputFormatters;
+  /// handles contentPadding for each textField
   final EdgeInsetsGeometry? contentPadding;
 
   OtpTextField({
@@ -81,9 +114,9 @@ class OtpTextField extends StatefulWidget {
     this.inputFormatters,
     this.contentPadding,
   })  : assert(numberOfFields > 0),
-        assert(styles.length > 0
+        assert(styles.isNotEmpty
             ? styles.length == numberOfFields
-            : styles.length == 0);
+            : styles.isEmpty);
 
   @override
   _OtpTextFieldState createState() => _OtpTextFieldState();
@@ -129,18 +162,18 @@ class _OtpTextFieldState extends State<OtpTextField> {
 
   @override
   Widget build(BuildContext context) {
-    // Listens for backspace key event when textfield is empty. Moves to previous node if possible.
+    // Listens for backspace key event when text-field is empty. Moves to previous node if possible.
     return KeyboardListener(
       focusNode: FocusNode(),
       onKeyEvent: (event) {
         if (event.logicalKey.keyLabel == 'Backspace') {
           // KeyDownEvent actually fires when the key is released
           if (event is KeyDownEvent) {
-            changeFocusToPreviousNodeWhenTapBackspace();
+            _changeFocusToPreviousNodeWhenTapBackspace();
           }
         }
       },
-      child: generateTextFields(context),
+      child: _generateTextFields(context),
     );
   }
 
@@ -174,17 +207,17 @@ class _OtpTextFieldState extends State<OtpTextField> {
                 filled: widget.filled,
                 fillColor: widget.fillColor,
                 focusedBorder: widget.showFieldAsBox
-                    ? outlineBorder(widget.focusedBorderColor)
-                    : underlineInputBorder(widget.focusedBorderColor),
+                    ? _outlineBorder(widget.focusedBorderColor)
+                    : _underlineInputBorder(widget.focusedBorderColor),
                 enabledBorder: widget.showFieldAsBox
-                    ? outlineBorder(widget.enabledBorderColor)
-                    : underlineInputBorder(widget.enabledBorderColor),
+                    ? _outlineBorder(widget.enabledBorderColor)
+                    : _underlineInputBorder(widget.enabledBorderColor),
                 disabledBorder: widget.showFieldAsBox
-                    ? outlineBorder(widget.disabledBorderColor)
-                    : underlineInputBorder(widget.disabledBorderColor),
+                    ? _outlineBorder(widget.disabledBorderColor)
+                    : _underlineInputBorder(widget.disabledBorderColor),
                 border: widget.showFieldAsBox
-                    ? outlineBorder(widget.borderColor)
-                    : underlineInputBorder(widget.borderColor),
+                    ? _outlineBorder(widget.borderColor)
+                    : _underlineInputBorder(widget.borderColor),
                 contentPadding: widget.contentPadding,
               ),
         obscureText: widget.obscureText,
@@ -200,7 +233,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  OutlineInputBorder outlineBorder(Color color) {
+  OutlineInputBorder _outlineBorder(Color color) {
     return OutlineInputBorder(
       borderSide: BorderSide(
         width: widget.borderWidth,
@@ -210,7 +243,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  UnderlineInputBorder underlineInputBorder(Color color) {
+  UnderlineInputBorder _underlineInputBorder(Color color) {
     return UnderlineInputBorder(
       borderSide: BorderSide(
         color: color,
@@ -219,10 +252,10 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  Widget generateTextFields(BuildContext context) {
+  Widget _generateTextFields(BuildContext context) {
     List<Widget> textFields = List.generate(widget.numberOfFields, (int i) {
-      addFocusNodeToEachTextField(index: i);
-      addTextEditingControllerToEachTextField(index: i);
+      _addFocusNodeToEachTextField(index: i);
+      _addTextEditingControllerToEachTextField(index: i);
 
       if (widget.styles.length > 0) {
         return _buildTextField(
@@ -244,19 +277,19 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  void addFocusNodeToEachTextField({required int index}) {
+  void _addFocusNodeToEachTextField({required int index}) {
     if (_focusNodes[index] == null) {
       _focusNodes[index] = FocusNode();
     }
   }
 
-  void addTextEditingControllerToEachTextField({required int index}) {
+  void _addTextEditingControllerToEachTextField({required int index}) {
     if (_textControllers[index] == null) {
       _textControllers[index] = TextEditingController();
     }
   }
 
-  void changeFocusToNextNodeWhenValueIsEntered({
+  void _changeFocusToNextNodeWhenValueIsEntered({
     required String value,
     required int indexOfTextField,
   }) {
@@ -275,7 +308,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
   }
 
   // Changes focus to the previous input field when backspace is tapped
-  void changeFocusToPreviousNodeWhenTapBackspace() {
+  void _changeFocusToPreviousNodeWhenTapBackspace() {
     try {
       // Find the index of the currently focused field
       final index =
@@ -291,7 +324,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
-  void onSubmit({required List<String?> verificationCode}) {
+  void _onSubmit({required List<String?> verificationCode}) {
     if (verificationCode.every((String? code) => code != null && code != '')) {
       if (widget.onSubmit != null) {
         widget.onSubmit!(verificationCode.join());
@@ -299,20 +332,20 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
-  void onCodeChanged({required String verificationCode}) {
+  void _onCodeChanged({required String verificationCode}) {
     if (widget.onCodeChanged != null) {
       widget.onCodeChanged!(verificationCode);
     }
   }
 
   _onDigitEntered(String digit, int index) {
-    onCodeChanged(verificationCode: digit);
-    changeFocusToNextNodeWhenValueIsEntered(
+    _onCodeChanged(verificationCode: digit);
+    _changeFocusToNextNodeWhenValueIsEntered(
       value: digit,
       indexOfTextField: index,
     );
     setState(() {
-      onSubmit(verificationCode: _verificationCode);
+      _onSubmit(verificationCode: _verificationCode);
     });
   }
 
