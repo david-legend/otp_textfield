@@ -58,9 +58,7 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
                 //get all textFields controller, if needed
                 controls = controllers;
               },
-              onSubmit: (String verificationCode) {
-                
-              }, // end onSubmit
+              onSubmit: (String verificationCode) {}, // end onSubmit
             ),
             Spacer(),
             Center(
@@ -184,7 +182,6 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
     return theme.textTheme.titleSmall?.copyWith(color: color);
   }
 }
-
 
 class CustomButton extends StatelessWidget {
   CustomButton({

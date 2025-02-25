@@ -1,3 +1,16 @@
+## [1.5.0+1] - 2025/02/25
+
+* Removed keyboard listener and added a more efficient solution to handle text changes
+* updated paste algorithm to be more dynamic
+
+## [1.4.0+2] - 2024/12/23
+
+* Added linting & Formatted files
+
+## [1.4.0+1] - 2024/12/23
+
+* Added linting
+
 ## [1.4.0] - 2024/12/23
 
 * Fixed issue where KeyboardListener would run twice and cause cursor to skip a text field

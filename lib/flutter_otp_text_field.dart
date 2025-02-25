@@ -7,75 +7,106 @@ import 'package:flutter/services.dart';
 
 typedef OnCodeEnteredCompletion = void Function(String value);
 typedef OnCodeChanged = void Function(String value);
-typedef HandleControllers = void Function(
-    List<TextEditingController?> controllers);
+typedef HandleControllers = void Function(List<TextEditingController?> controllers);
 
 // ignore: must_be_immutable
 class OtpTextField extends StatefulWidget {
   /// allows to show or disable cursor
   final bool showCursor;
+
   /// specify number of fields, defaults to 4
   final int numberOfFields;
+
   /// width of each text field
   final double fieldWidth;
+
   /// height of each text field
   final double? fieldHeight;
+
   /// border width of each text field
   final double borderWidth;
+
   /// aligns text fields in container
   final Alignment? alignment;
+
   /// color of enabled border
   final Color enabledBorderColor;
+
   /// color of focused border
   final Color focusedBorderColor;
+
   /// color of disabled border
   final Color disabledBorderColor;
+
   /// handles color of border
   final Color borderColor;
+
   /// handles color of cursor
   final Color? cursorColor;
+
   /// handles margin in between text fields
   final EdgeInsetsGeometry margin;
+
   /// controls keyboard type
   final TextInputType keyboardType;
+
   /// handles textStyle of digit in textField
   final TextStyle? textStyle;
+
   /// handles mainAxisAlignment of textFields in Row
   final MainAxisAlignment mainAxisAlignment;
+
   /// handles crossAxisAlignment of textFields in Row
   final CrossAxisAlignment crossAxisAlignment;
+
   /// callBack called when last textField is filled
   final OnCodeEnteredCompletion? onSubmit;
+
   /// callBack called when code in textField changes
   final OnCodeEnteredCompletion? onCodeChanged;
+
   /// textEditing controller handler
   final HandleControllers? handleControllers;
+
   /// handles visibility of text in textField
   final bool obscureText;
+
   /// if true, uses outlineBorder, if false underlineBorder
   final bool showFieldAsBox;
+
   /// if true, sets textFields to enabled
   final bool enabled;
+
   /// If true the decoration's container is filled with [fillColor].
   final bool filled;
+
   /// handles autoFocus
   final bool autoFocus;
+
   /// if true, sets content of textField to be readOnly
   final bool readOnly;
+
   /// clears text
   bool clearText;
+
   /// if true, custom Input decoration that is passed in takes effect
   final bool hasCustomInputDecoration;
+
   /// sets fill color of textField
   final Color fillColor;
+
   /// sets borderRadius of textField
   final BorderRadius borderRadius;
+
   /// sets InputDecoration
   final InputDecoration? decoration;
+
   /// sets custom styles for textFields
   final List<TextStyle?> styles;
+
   /// sets inputFormatters for textFields
   final List<TextInputFormatter>? inputFormatters;
+
   /// handles contentPadding for each textField
   final EdgeInsetsGeometry? contentPadding;
 
@@ -114,9 +145,7 @@ class OtpTextField extends StatefulWidget {
     this.inputFormatters,
     this.contentPadding,
   })  : assert(numberOfFields > 0),
-        assert(styles.isNotEmpty
-            ? styles.length == numberOfFields
-            : styles.isEmpty);
+        assert(styles.isNotEmpty ? styles.length == numberOfFields : styles.isEmpty);
 
   @override
   _OtpTextFieldState createState() => _OtpTextFieldState();
@@ -156,25 +185,12 @@ class _OtpTextFieldState extends State<OtpTextField> {
   @override
   void dispose() {
     super.dispose();
-    _textControllers
-        .forEach((TextEditingController? controller) => controller?.dispose());
+    _textControllers.forEach((TextEditingController? controller) => controller?.dispose());
   }
 
   @override
   Widget build(BuildContext context) {
-    // Listens for backspace key event when text-field is empty. Moves to previous node if possible.
-    return KeyboardListener(
-      focusNode: FocusNode(),
-      onKeyEvent: (event) {
-        if (event.logicalKey.keyLabel == 'Backspace') {
-          // KeyDownEvent actually fires when the key is released
-          if (event is KeyDownEvent) {
-            _changeFocusToPreviousNodeWhenTapBackspace();
-          }
-        }
-      },
-      child: _generateTextFields(context),
-    );
+    return _generateTextFields(context);
   }
 
   Widget _buildTextField({
@@ -226,7 +242,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
             _verificationCode[index] = value;
             _onDigitEntered(value, index);
           } else {
-            _handlePaste(value);
+            _handlePaste(value, index);
           }
         },
       ),
@@ -257,7 +273,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
       _addFocusNodeToEachTextField(index: i);
       _addTextEditingControllerToEachTextField(index: i);
 
-      if (widget.styles.length > 0) {
+      if (widget.styles.isNotEmpty) {
         return _buildTextField(
           context: context,
           index: i,
@@ -286,6 +302,25 @@ class _OtpTextFieldState extends State<OtpTextField> {
   void _addTextEditingControllerToEachTextField({required int index}) {
     if (_textControllers[index] == null) {
       _textControllers[index] = TextEditingController();
+
+      _textControllers[index]!.addListener(() {
+        String text = _textControllers[index]!.text;
+        if (text.isEmpty) {
+          // Handle backspace by moving focus to the previous field
+          _changeFocusToPreviousNode(index);
+        }
+      });
+    }
+  }
+
+  void _changeFocusToPreviousNode(int index) {
+    try {
+      if (index > 0 && index < widget.numberOfFields) {
+        _focusNodes[index - 1]?.requestFocus();
+      }
+    } catch (e) {
+      // Log an error if focus cannot be moved
+      log('Cannot focus on the previous field');
     }
   }
 
@@ -294,7 +329,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     required int indexOfTextField,
   }) {
     //only change focus to the next textField if the value entered has a length greater than one
-    if (value.length > 0) {
+    if (value.isNotEmpty) {
       //if the textField in focus is not the last textField,
       // change focus to the next textField
       if (indexOfTextField + 1 != widget.numberOfFields) {
@@ -304,23 +339,6 @@ class _OtpTextFieldState extends State<OtpTextField> {
         //if the textField in focus is the last textField, unFocus after text changed
         _focusNodes[indexOfTextField]?.unfocus();
       }
-    }
-  }
-
-  // Changes focus to the previous input field when backspace is tapped
-  void _changeFocusToPreviousNodeWhenTapBackspace() {
-    try {
-      // Find the index of the currently focused field
-      final index =
-          _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
-
-      // If not at the first field, move focus to the previous field
-      if (index > 0) {
-        FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
-      }
-    } catch (e) {
-      // Log an error if focus cannot be moved
-      log('Cannot focus on the previous field');
     }
   }
 
@@ -349,26 +367,36 @@ class _OtpTextFieldState extends State<OtpTextField> {
     });
   }
 
-  _handlePaste(String str) {
+  /// this is called when a particular text field has more than one character
+  /// this will normally happen in 2 instances
+  /// 1. when a user pastes a string in the text field
+  /// 2. when a user types more than one character in a field
+  _handlePaste(String str, int index) {
     if (str.length > widget.numberOfFields) {
       str = str.substring(0, widget.numberOfFields);
     }
+
+    int textFieldIndex = index;
     // Iterate through the string, character by character
+    // then assign the character to the text field,
+    // starting from the field the action was initiated from.
+    // for eg. if the user pasted in the second text field, then this iteration will start assigning from there
     for (int i = 0; i < str.length; i++) {
+      if (textFieldIndex >= widget.numberOfFields) break;
       // Extract the current character (digit)
       String digit = str.substring(i, i + 1);
-
+      print("actual:: ${digit.toString()}");
       // Update the text in the corresponding text controller
-      _textControllers[i]!.text = digit;
+      _textControllers[textFieldIndex]!.text = digit;
 
       // Set the text value explicitly for the controller
-      _textControllers[i]!.value = TextEditingValue(text: digit);
+      _textControllers[textFieldIndex]!.value = TextEditingValue(text: digit);
 
       // Update the verification code array with the digit
-      _verificationCode[i] = digit;
+      _verificationCode[textFieldIndex] = digit;
 
-      _onDigitEntered(digit, i);
-
+      _onDigitEntered(digit, textFieldIndex);
+      textFieldIndex += 1;
       setState(() {});
     }
   }
