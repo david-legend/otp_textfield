@@ -385,7 +385,6 @@ class _OtpTextFieldState extends State<OtpTextField> {
       if (textFieldIndex >= widget.numberOfFields) break;
       // Extract the current character (digit)
       String digit = str.substring(i, i + 1);
-      print("actual:: ${digit.toString()}");
       // Update the text in the corresponding text controller
       _textControllers[textFieldIndex]!.text = digit;
 
