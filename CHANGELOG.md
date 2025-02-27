@@ -1,3 +1,7 @@
+## [1.5.1+1] - 2025/02/27
+
+* few updates to comments & docs
+
 ## [1.5.0+1] - 2025/02/25
 
 * Removed keyboard listener and added a more efficient solution to handle text changes
