@@ -1,3 +1,36 @@
+## [1.5.1+1] - 2025/02/27
+
+* few updates to comments & docs
+
+## [1.5.0+1] - 2025/02/25
+
+* Removed keyboard listener and added a more efficient solution to handle text changes
+* updated paste algorithm to be more dynamic
+
+## [1.4.0+2] - 2024/12/23
+
+* Added linting & Formatted files
+
+## [1.4.0+1] - 2024/12/23
+
+* Added linting
+
+## [1.4.0] - 2024/12/23
+
+* Fixed issue where KeyboardListener would run twice and cause cursor to skip a text field
+* Fixed issue where auto-filling would only enter a value in the first input field
+* Fixed issue where pasting the OTP would only advance the focus to the second field, and would not submit the form
+
+
+## [1.3.0] - 2024/12/22
+
+* Fixed a bug where backspace did not properly shift focus to the previous input field.
+
+
+## [1.2.0] - 2024/03/14
+
+* Keyboard Listener: Allow pasting OTP codes directly for a more convenient and efficient experience
+
 ## [1.1.2+1] - 2024/03/14
 
 * exposed content padding 

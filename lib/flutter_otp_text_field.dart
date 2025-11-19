@@ -7,44 +7,106 @@ import 'package:flutter/services.dart';
 
 typedef OnCodeEnteredCompletion = void Function(String value);
 typedef OnCodeChanged = void Function(String value);
-typedef HandleControllers = void Function(
-    List<TextEditingController?> controllers);
+typedef HandleControllers = void Function(List<TextEditingController?> controllers);
 
 // ignore: must_be_immutable
 class OtpTextField extends StatefulWidget {
+  /// allows to show or disable cursor
   final bool showCursor;
+
+  /// specify number of fields, defaults to 4
   final int numberOfFields;
+
+  /// width of each text field
   final double fieldWidth;
+
+  /// height of each text field
   final double? fieldHeight;
+
+  /// border width of each text field
   final double borderWidth;
+
+  /// aligns text fields in container
   final Alignment? alignment;
+
+  /// color of enabled border
   final Color enabledBorderColor;
+
+  /// color of focused border
   final Color focusedBorderColor;
+
+  /// color of disabled border
   final Color disabledBorderColor;
+
+  /// handles color of border
   final Color borderColor;
+
+  /// handles color of cursor
   final Color? cursorColor;
+
+  /// handles margin in between text fields
   final EdgeInsetsGeometry margin;
+
+  /// controls keyboard type
   final TextInputType keyboardType;
+
+  /// handles textStyle of digit in textField
   final TextStyle? textStyle;
+
+  /// handles mainAxisAlignment of textFields in Row
   final MainAxisAlignment mainAxisAlignment;
+
+  /// handles crossAxisAlignment of textFields in Row
   final CrossAxisAlignment crossAxisAlignment;
+
+  /// callBack called when last textField is filled
   final OnCodeEnteredCompletion? onSubmit;
+
+  /// callBack called when code in textField changes
   final OnCodeEnteredCompletion? onCodeChanged;
+
+  /// textEditing controller handler
   final HandleControllers? handleControllers;
+
+  /// handles visibility of text in textField
   final bool obscureText;
+
+  /// if true, uses outlineBorder, if false underlineBorder
   final bool showFieldAsBox;
+
+  /// if true, sets textFields to enabled
   final bool enabled;
+
+  /// If true the decoration's container is filled with [fillColor].
   final bool filled;
+
+  /// handles autoFocus
   final bool autoFocus;
+
+  /// if true, sets content of textField to be readOnly
   final bool readOnly;
   final String? obscuringCharacter;
   bool clearText;
+
+  /// if true, custom Input decoration that is passed in takes effect
   final bool hasCustomInputDecoration;
+
+  /// sets fill color of textField
   final Color fillColor;
+
+  /// sets borderRadius of textField
   final BorderRadius borderRadius;
+
+  /// sets InputDecoration
   final InputDecoration? decoration;
+
+  /// sets custom styles for textFields
   final List<TextStyle?> styles;
+
+  /// sets inputFormatters for textFields
   final List<TextInputFormatter>? inputFormatters;
+
+  /// handles contentPadding for each textField
   final EdgeInsetsGeometry? contentPadding;
 
   OtpTextField({
@@ -83,9 +145,7 @@ class OtpTextField extends StatefulWidget {
     this.inputFormatters,
     this.contentPadding,
   })  : assert(numberOfFields > 0),
-        assert(styles.length > 0
-            ? styles.length == numberOfFields
-            : styles.length == 0);
+        assert(styles.isNotEmpty ? styles.length == numberOfFields : styles.isEmpty);
 
   @override
   _OtpTextFieldState createState() => _OtpTextFieldState();
@@ -125,21 +185,12 @@ class _OtpTextFieldState extends State<OtpTextField> {
   @override
   void dispose() {
     super.dispose();
-    _textControllers
-        .forEach((TextEditingController? controller) => controller?.dispose());
+    _textControllers.forEach((TextEditingController? controller) => controller?.dispose());
   }
 
   @override
   Widget build(BuildContext context) {
-    // Listens for backspace key event when textfield is empty. Moves to previous node if possible.
-    return RawKeyboardListener(
-        focusNode: FocusNode(),
-        onKey: (value) {
-          if (value.logicalKey.keyLabel == 'Backspace') {
-            changeFocusToPreviousNodeWhenTapBackspace();
-          }
-        },
-        child: generateTextFields(context));
+    return _generateTextFields(context);
   }
 
   Widget _buildTextField({
@@ -156,7 +207,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         showCursor: widget.showCursor,
         keyboardType: widget.keyboardType,
         textAlign: TextAlign.center,
-        maxLength: 1,
+        maxLength: widget.numberOfFields,
         readOnly: widget.readOnly,
         style: style ?? widget.textStyle,
         autofocus: widget.autoFocus,
@@ -173,37 +224,33 @@ class _OtpTextFieldState extends State<OtpTextField> {
                 filled: widget.filled,
                 fillColor: widget.fillColor,
                 focusedBorder: widget.showFieldAsBox
-                    ? outlineBorder(widget.focusedBorderColor)
-                    : underlineInputBorder(widget.focusedBorderColor),
+                    ? _outlineBorder(widget.focusedBorderColor)
+                    : _underlineInputBorder(widget.focusedBorderColor),
                 enabledBorder: widget.showFieldAsBox
-                    ? outlineBorder(widget.enabledBorderColor)
-                    : underlineInputBorder(widget.enabledBorderColor),
+                    ? _outlineBorder(widget.enabledBorderColor)
+                    : _underlineInputBorder(widget.enabledBorderColor),
                 disabledBorder: widget.showFieldAsBox
-                    ? outlineBorder(widget.disabledBorderColor)
-                    : underlineInputBorder(widget.disabledBorderColor),
+                    ? _outlineBorder(widget.disabledBorderColor)
+                    : _underlineInputBorder(widget.disabledBorderColor),
                 border: widget.showFieldAsBox
-                    ? outlineBorder(widget.borderColor)
-                    : underlineInputBorder(widget.borderColor),
+                    ? _outlineBorder(widget.borderColor)
+                    : _underlineInputBorder(widget.borderColor),
                 contentPadding: widget.contentPadding,
               ),
         obscureText: widget.obscureText,
         onChanged: (String value) {
-          //save entered value in a list
-          _verificationCode[index] = value;
-          onCodeChanged(verificationCode: value);
-          changeFocusToNextNodeWhenValueIsEntered(
-            value: value,
-            indexOfTextField: index,
-          );
-          changeFocusToPreviousNodeWhenValueIsRemoved(
-              value: value, indexOfTextField: index);
-          onSubmit(verificationCode: _verificationCode);
+          if (value.length <= 1) {
+            _verificationCode[index] = value;
+            _onDigitEntered(value, index);
+          } else {
+            _handlePaste(value, index);
+          }
         },
       ),
     );
   }
 
-  OutlineInputBorder outlineBorder(Color color) {
+  OutlineInputBorder _outlineBorder(Color color) {
     return OutlineInputBorder(
       borderSide: BorderSide(
         width: widget.borderWidth,
@@ -213,7 +260,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  UnderlineInputBorder underlineInputBorder(Color color) {
+  UnderlineInputBorder _underlineInputBorder(Color color) {
     return UnderlineInputBorder(
       borderSide: BorderSide(
         color: color,
@@ -222,12 +269,12 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  Widget generateTextFields(BuildContext context) {
+  Widget _generateTextFields(BuildContext context) {
     List<Widget> textFields = List.generate(widget.numberOfFields, (int i) {
-      addFocusNodeToEachTextField(index: i);
-      addTextEditingControllerToEachTextField(index: i);
+      _addFocusNodeToEachTextField(index: i);
+      _addTextEditingControllerToEachTextField(index: i);
 
-      if (widget.styles.length > 0) {
+      if (widget.styles.isNotEmpty) {
         return _buildTextField(
           context: context,
           index: i,
@@ -247,24 +294,43 @@ class _OtpTextFieldState extends State<OtpTextField> {
     );
   }
 
-  void addFocusNodeToEachTextField({required int index}) {
+  void _addFocusNodeToEachTextField({required int index}) {
     if (_focusNodes[index] == null) {
       _focusNodes[index] = FocusNode();
     }
   }
 
-  void addTextEditingControllerToEachTextField({required int index}) {
+  void _addTextEditingControllerToEachTextField({required int index}) {
     if (_textControllers[index] == null) {
       _textControllers[index] = TextEditingController();
+
+      _textControllers[index]!.addListener(() {
+        String text = _textControllers[index]!.text;
+        if (text.isEmpty) {
+          // Handle backspace by moving focus to the previous field
+          _changeFocusToPreviousNode(index);
+        }
+      });
     }
   }
 
-  void changeFocusToNextNodeWhenValueIsEntered({
+  void _changeFocusToPreviousNode(int index) {
+    try {
+      if (index > 0 && index < widget.numberOfFields) {
+        _focusNodes[index - 1]?.requestFocus();
+      }
+    } catch (e) {
+      // Log an error if focus cannot be moved
+      log('Cannot focus on the previous field');
+    }
+  }
+
+  void _changeFocusToNextNodeWhenValueIsEntered({
     required String value,
     required int indexOfTextField,
   }) {
     //only change focus to the next textField if the value entered has a length greater than one
-    if (value.length > 0) {
+    if (value.isNotEmpty) {
       //if the textField in focus is not the last textField,
       // change focus to the next textField
       if (indexOfTextField + 1 != widget.numberOfFields) {
@@ -277,48 +343,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
-  // A flag to eliminate race condition between [changeFocusToPreviousNodeWhenValueIsRemoved] and [changeFocusToPreviousNodeWhenTapBackspace]
-  bool _backspaceHandled = false;
-
-  void changeFocusToPreviousNodeWhenValueIsRemoved({
-    required String value,
-    required int indexOfTextField,
-  }) {
-    // Race condition eliminator
-    _backspaceHandled = true;
-    Future.delayed(
-      Duration(milliseconds: 100),
-      () {
-        _backspaceHandled = false;
-      },
-    );
-    //only change focus to the previous textField if the value entered has a length zero
-    if (value.length == 0) {
-      //if the textField in focus is not the first textField,
-      // change focus to the previous textField
-      if (indexOfTextField != 0) {
-        //change focus to the next textField
-        FocusScope.of(context).requestFocus(_focusNodes[indexOfTextField - 1]);
-      }
-    }
-  }
-
-  void changeFocusToPreviousNodeWhenTapBackspace() async {
-    // Wait because this is running before [changeFocusToPreviousNodeWhenValueIsRemoved]
-    await Future.delayed(Duration(milliseconds: 50));
-    if (_backspaceHandled) return;
-    try {
-      final index =
-          _focusNodes.indexWhere((element) => element?.hasFocus ?? false);
-      if (index > 0) {
-        FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
-      }
-    } catch (e) {
-      log('Cannot focus on the previous field');
-    }
-  }
-
-  void onSubmit({required List<String?> verificationCode}) {
+  void _onSubmit({required List<String?> verificationCode}) {
     if (verificationCode.every((String? code) => code != null && code != '')) {
       if (widget.onSubmit != null) {
         widget.onSubmit!(verificationCode.join());
@@ -326,9 +351,53 @@ class _OtpTextFieldState extends State<OtpTextField> {
     }
   }
 
-  void onCodeChanged({required String verificationCode}) {
+  void _onCodeChanged({required String verificationCode}) {
     if (widget.onCodeChanged != null) {
       widget.onCodeChanged!(verificationCode);
+    }
+  }
+
+  _onDigitEntered(String digit, int index) {
+    _onCodeChanged(verificationCode: digit);
+    _changeFocusToNextNodeWhenValueIsEntered(
+      value: digit,
+      indexOfTextField: index,
+    );
+    setState(() {
+      _onSubmit(verificationCode: _verificationCode);
+    });
+  }
+
+  /// this is called when a particular text field has more than one character
+  /// this will normally happen in 2 instances
+  /// 1. when a user pastes a string in the text field
+  /// 2. when a user types more than one character in a field
+  _handlePaste(String str, int index) {
+    if (str.length > widget.numberOfFields) {
+      str = str.substring(0, widget.numberOfFields);
+    }
+
+    int textFieldIndex = index;
+    // Iterate through the string, character by character
+    // then assign the character to the text field,
+    // starting from the field the action was initiated from.
+    // for eg. if the user pasted in the second text field, then this iteration will start assigning from there
+    for (int i = 0; i < str.length; i++) {
+      if (textFieldIndex >= widget.numberOfFields) break;
+      // Extract the current character (digit)
+      String digit = str.substring(i, i + 1);
+      // Update the text in the corresponding text controller
+      _textControllers[textFieldIndex]!.text = digit;
+
+      // Set the text value explicitly for the controller
+      _textControllers[textFieldIndex]!.value = TextEditingValue(text: digit);
+
+      // Update the verification code array with the digit
+      _verificationCode[textFieldIndex] = digit;
+
+      _onDigitEntered(digit, textFieldIndex);
+      textFieldIndex += 1;
+      setState(() {});
     }
   }
 }
