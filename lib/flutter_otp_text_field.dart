@@ -85,8 +85,7 @@ class OtpTextField extends StatefulWidget {
 
   /// if true, sets content of textField to be readOnly
   final bool readOnly;
-
-  /// clears text
+  final String? obscuringCharacter;
   bool clearText;
 
   /// if true, custom Input decoration that is passed in takes effect
@@ -139,6 +138,7 @@ class OtpTextField extends StatefulWidget {
     this.filled = false,
     this.fillColor = const Color(0xFFFFFFFF),
     this.readOnly = false,
+    this.obscuringCharacter,
     this.decoration,
     this.onCodeChanged,
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
@@ -215,6 +215,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
         controller: _textControllers[index],
         focusNode: _focusNodes[index],
         enabled: widget.enabled,
+        obscuringCharacter: widget.obscuringCharacter ?? "*",
         inputFormatters: widget.inputFormatters,
         decoration: widget.hasCustomInputDecoration
             ? widget.decoration
