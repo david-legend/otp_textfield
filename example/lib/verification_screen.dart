@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
 const Color primaryColor = Color(0xFF121212);
