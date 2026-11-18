@@ -26,14 +26,14 @@ List<Example> examples = [
     title: "OTP TextField Example 1",
     subtitle: "Verification Screen 1",
     route: MaterialPageRoute(
-      builder: (context) => VerificationScreen1(),
+      builder: (context) => const VerificationScreen1(),
     ),
   ),
   Example(
     title: "OTP TextField Example 2",
     subtitle: "Verification Screen 2",
     route: MaterialPageRoute(
-      builder: (context) => VerificationScreen2(),
+      builder: (context) => const VerificationScreen2(),
     ),
   ),
   // Example(
@@ -46,10 +46,12 @@ List<Example> examples = [
 ];
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -60,7 +62,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Examples"),
+          title: const Text("Examples"),
         ),
         body: ListView(
           children: [
@@ -68,13 +70,13 @@ class MyApp extends StatelessWidget {
               return ListTile(
                 title: Text(
                   examples[0].title,
-                  style: TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => VerificationScreen1(),
+                      builder: (context) => const VerificationScreen1(),
                     ),
                   );
                 },
@@ -85,13 +87,13 @@ class MyApp extends StatelessWidget {
                 return ListTile(
                   title: Text(
                     examples[1].title,
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => VerificationScreen2(),
+                        builder: (context) => const VerificationScreen2(),
                       ),
                     );
                   },
@@ -126,7 +128,7 @@ class MyApp extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => VerificationScreen1(),
+        builder: (context) => const VerificationScreen1(),
       ),
     );
   }

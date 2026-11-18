@@ -9,8 +9,10 @@ const Color accentYellowColor = Color(0xFFFFB612);
 const Color accentOrangeColor = Color(0xFFEA7A3B);
 
 class VerificationScreen1 extends StatefulWidget {
+  const VerificationScreen1({super.key});
+
   @override
-  _VerificationScreen1State createState() => _VerificationScreen1State();
+  State<VerificationScreen1> createState() => _VerificationScreen1State();
 }
 
 class _VerificationScreen1State extends State<VerificationScreen1> {
@@ -37,16 +39,16 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
               "Verification Code",
               style: theme.textTheme.titleSmall,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               "We texted you a code",
               style: theme.textTheme.bodyLarge,
             ),
             Text("Please enter it below", style: theme.textTheme.titleSmall),
-            Spacer(flex: 2),
+            const Spacer(flex: 2),
             OtpTextField(
               numberOfFields: numberOfFields,
-              borderColor: Color(0xFF512DA8),
+              borderColor: const Color(0xFF512DA8),
               focusedBorderColor: primaryColor,
               clearText: clearText,
               showFieldAsBox: true,
@@ -60,7 +62,7 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
               },
               onSubmit: (String verificationCode) {}, // end onSubmit
             ),
-            Spacer(),
+            const Spacer(),
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -77,7 +79,7 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
                 style: theme.textTheme.bodyMedium,
               ),
             ),
-            Spacer(flex: 3),
+            const Spacer(flex: 3),
             CustomButton(
               onPressed: () {},
               title: "Confirm",
@@ -86,7 +88,7 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
                 color: Colors.white,
               ),
             ),
-            Spacer(flex: 2),
+            const Spacer(flex: 2),
           ],
         ),
       ),
@@ -95,8 +97,10 @@ class _VerificationScreen1State extends State<VerificationScreen1> {
 }
 
 class VerificationScreen2 extends StatefulWidget {
+  const VerificationScreen2({super.key});
+
   @override
-  _VerificationScreen2State createState() => _VerificationScreen2State();
+  State<VerificationScreen2> createState() => _VerificationScreen2State();
 }
 
 class _VerificationScreen2State extends State<VerificationScreen2> {
@@ -127,13 +131,13 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
               "Verification Code",
               style: theme.textTheme.titleSmall,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               "We texted you a code",
               style: theme.textTheme.bodyLarge,
             ),
             Text("Please enter it below", style: theme.textTheme.bodyLarge),
-            Spacer(flex: 2),
+            const Spacer(flex: 2),
             OtpTextField(
               numberOfFields: 6,
               borderColor: accentPurpleColor,
@@ -144,7 +148,7 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
               onCodeChanged: (String code) {},
               onSubmit: (String verificationCode) {}, // end onSubmit
             ),
-            Spacer(),
+            const Spacer(),
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -161,7 +165,7 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
                 style: theme.textTheme.bodyMedium,
               ),
             ),
-            Spacer(flex: 3),
+            const Spacer(flex: 3),
             CustomButton(
               onPressed: () {},
               title: "Confirm",
@@ -170,7 +174,7 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
                 color: Colors.white,
               ),
             ),
-            Spacer(flex: 2),
+            const Spacer(flex: 2),
           ],
         ),
       ),
@@ -184,7 +188,7 @@ class _VerificationScreen2State extends State<VerificationScreen2> {
 }
 
 class CustomButton extends StatelessWidget {
-  CustomButton({
+  const CustomButton({super.key, 
     required this.title,
     this.onPressed,
     this.height = 60,
@@ -207,10 +211,10 @@ class CustomButton extends StatelessWidget {
     return MaterialButton(
       onPressed: onPressed,
       elevation: elevation,
-      shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.only(
-          topLeft: const Radius.circular(30.0),
-          bottomLeft: const Radius.circular(30.0),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          bottomLeft: Radius.circular(30.0),
         ),
       ),
       height: height,

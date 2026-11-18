@@ -6,7 +6,7 @@ import 'package:example/main.dart';
 
 void main() {
   testWidgets('home lists the examples', (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(const MyApp());
 
     expect(find.text('OTP TextField Example 1'), findsOneWidget);
     expect(find.text('OTP TextField Example 2'), findsOneWidget);
