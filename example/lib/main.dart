@@ -1,5 +1,5 @@
 import 'package:example/verification_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const Color accentPurpleColor = Color(0xFF6A53A1);
 const Color accentPinkColor = Color(0xFFF99BBD);
