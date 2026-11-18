@@ -1,3 +1,8 @@
+## [2.0.0] - 2026/11/18
+
+* BREAKING: migrated from `package:flutter/material.dart` to the `material_ui` package
+* Requires Flutter >=3.44.0 and Dart >=3.12.0
+
 ## [1.5.1+1] - 2025/02/27
 
 * few updates to comments & docs
