@@ -1,3 +1,10 @@
+## [2.0.1] - 2026/11/18
+
+* Fixed focus jumping back to the previous field after entering a digit
+* Fixed paste/autofill into a non-first field filling the wrong fields
+* Added package test suite
+* Example: lint cleanups
+
 ## [2.0.0] - 2026/11/18
 
 * BREAKING: migrated from `package:flutter/material.dart` to the `material_ui` package

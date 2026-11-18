@@ -303,12 +303,16 @@ class _OtpTextFieldState extends State<OtpTextField> {
     if (_textControllers[index] == null) {
       _textControllers[index] = TextEditingController();
 
+      String previousText = '';
       _textControllers[index]!.addListener(() {
         String text = _textControllers[index]!.text;
-        if (text.isEmpty) {
+        // Only react to actual text deletion; the listener also fires on
+        // selection/cursor changes (e.g. when the field gains focus).
+        if (text.isEmpty && previousText.isNotEmpty) {
           // Handle backspace by moving focus to the previous field
           _changeFocusToPreviousNode(index);
         }
+        previousText = text;
       });
     }
   }
